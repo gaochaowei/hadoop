@@ -1,3 +1,5 @@
+hive-sites.xml
+
 hive> show databases;
 
 hive> use default;
@@ -9,6 +11,11 @@ hive> describe formatted TABLE;
 hive> set hive.execution.engine=mr; (only affect current session)
 hive> set hive.log.dir;
 hive> set hive.metastore.warehouse.engine;
+
+hive> "hive.exec.compress.output" : "true"
+hive> "hive.exec.compress.intermediate" : "true"
+hive> "avro.output.codec": "snappy"
+
 $ hive -e "hive command"
 $ hive -f local_file
 
