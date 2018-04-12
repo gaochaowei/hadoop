@@ -1,0 +1,11 @@
+$ mysql -u retail_dba -h quickstart -p
+
+mysql> show databases;
+
+mysql> use detail_db;
+
+mysql> show tables;
+
+mysql> quit;
+
+$

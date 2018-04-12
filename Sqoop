@@ -1,0 +1,130 @@
+HADOOP HOME: $HADOOP_HOME, /usr/lib/hadoop
+HADOOP CONFIG DIR: $HADOOP_CONF_DIR, $HADOOP_HOME/conf/
+
+$ sqoop list-databases
+        list-tables
+        eval --query "mysql commands"
+        import-all-tables --warehouse-dir
+        import
+        export
+        job
+            --list
+            --create job_id -- import...
+            --show   job_id
+            --exec   job_id
+            --delete job_id
+        merge
+            --new-data
+            --onto
+            --merge-key
+            --target-dir
+            --jar-file
+            --class-name
+
+Common arguments
+    --connect jdbc:mysql://quickstart:3306/retail_db
+    --username cloudera
+    --password cloudera
+    --verbose
+
+Import control arguments
+    --target-dir
+    --warehouse-dir
+    --append
+
+File format arguments
+    --as-avrodatafile
+    --as-parquetfile
+    --as-sequencefile
+    --as-textfile
+
+Compression arguments
+    -z,--compress
+    --compression-codec <c>
+
+Import by table
+    --table
+    --columns "name,employee_id,jobtitle"
+    --boundary-query
+    --where
+
+Free-form Query Imports
+    -e, --query 'WHERE $CONDITIONS' / "WHERE \$CONDITIONS"
+    -m,--num-mappers 1
+    --split-by
+
+Incremental import arguments
+    -check-column
+    --incremental append | lastmodified.
+    --last-value
+
+Output line formatting arguments
+    --enclosed-by <char>
+    --escaped-by <char>
+    --fields-terminated-by \001
+    --lines-terminated-by <char>
+    --optionally-enclosed-by <char>
+    --mysql-delimiters
+        Uses MySQL's default delimiter set:
+        fields: ,  lines: \n  escaped-by: \  optionally-enclosed-by: '
+
+Input parsing arguments
+    --input-enclosed-by <char>
+    --input-escaped-by <char>
+    --input-fields-terminated-by
+    --input-lines-terminated-by
+    --input-optionally-enclosed-by
+
+Hive arguments
+    --hive-import
+    --hive-database
+    --hive-table
+    --hive-overwrite
+    --create-hive-table	If set, then the job will fail if the target hive table exits. By default this property is false.
+    --hive-drop-import-delims	Drops \n, \r, and \01 from string fields when importing to Hive.
+    --hive-delims-replacement	Replace \n, \r, and \01 from string fields with user defined string when importing to Hive.
+    --hive-partition-key
+    --hive-partition-value
+
+HBase arguments:
+    --column-family <family>    Sets the target column family for the
+                                import
+    --hbase-create-table        If specified, create missing HBase tables
+    --hbase-row-key <col>       Specifies which input column to use as the
+                                row key
+    --hbase-table <table>       Import to <table> in HBase
+
+HCatalog arguments:
+    --hcatalog-database <arg>
+    --hcatalog-home <hdir>
+    --hcatalog-partition-keys <partition-key>
+    --hcatalog-partition-values <partition-value>
+    --hive-partition-key <partition-key>
+    --hive-partition-value <partition-value>
+
+Export control arguments:
+    --table
+    --export-dir
+    --hcatalog-database
+    --hcatalog-table
+    --update-key  unique, PK default, insert duplicate if not unique
+    --staging-table
+    --clear-staging-table
+    --update-mode updateonly|allowinsert
+
+Handle null values
+    --null-non-string <null-str>
+    --null-string <null-str>
+    --input-null-non-string <null-str>
+    --input-null-string <null-str>
+
+
+hive> LOAD DATA INPATH
+
+Code generation arguments:
+    --bindir <dir>	Output directory for compiled objects
+    --class-name <name>	Sets the generated class name. This overrides --package-name. When combined with --jar-file, sets the input class.
+    --jar-file <file>	Disable code generation; use specified jar
+    --outdir <dir>	Output directory for generated code
+    --package-name <name>	Put auto-generated classes in this package
+    --map-column-java <m>	Override default mapping from SQL type to Java type for configured columns.

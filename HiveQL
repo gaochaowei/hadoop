@@ -1,0 +1,41 @@
+hive> alter table rename to
+
+hive> create external table TBL
+      ROW FORMAT SERDE 'SerDe class' STORED AS INPUTFORMAT 'InputFormat Class' OUTPUTFORMAT 'OutputFormat Class'
+      LOCATION 'hdfs path'
+      TBLPROPERTIES('avro.schema.url'='hdfs avsc path');
+
+hive> create external table TBL
+      ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerde'
+      TBLPROPERTIES('input.regex'='....');
+hive> add jar /usr/lib/hive/lib/hive-contrib.jar
+
+hive> create external table TBL ... STORED AS AVRO;
+
+hive> create external table TBL ...
+      ROW FORMAT delimited
+      fields terminated b y'|'
+      collection items terminated by ','
+      map keys terminated by ':'
+      lines terminated by '\n'
+      stored as textfile;
+
+hive> A join B on A.c1=B.c1
+
+hive> create table order_static (order_id int, order_date string, order_customer_id int, order_status string)
+      partitioned by (order_month string)
+hive> alter table ... add partition(order_month='2014-01'), partition(order_month='2014-02') ...
+hive> insert into order_static partition(order_month='2014-01') select ...
+
+hive> set hive.exec.dynamic.partition=true;
+hive> set hive.exec.dynamic.partition.mode=nonstrict;
+
+hive> create table order_nonstrict (order_id int, order_date string, order_customer_id int, order_status string)
+      partition by (order_year string, order_month string)
+hive> insert into order_nonstrict partition(order_year, order_month) select order_year, order_month, ...
+
+hive> set hive.exec.dynamic.partition=true;
+hive> set hive.exec.dynamic.partition.mode=strict;
+hive> create table order_strict (order_id int, order_date string, order_customer_id int, order_status string)
+      partition by (order_year string, order_month string)
+hive> insert into order_strict partition(order_year='2013', order_month) select order_month, ...

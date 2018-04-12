@@ -1,0 +1,12 @@
+grunt> order = load path using PigStorage(',') as (order_id:int, order_date:chararray...);
+
+grunt> grouped = group ... by ...;
+
+grunt> generated = foreach grouped generate group ...
+
+grunt> store ... into ...
+
+grunt> history
+
+$ pig order_count.pig
+

@@ -1,0 +1,7 @@
+$ oozie admin -oozie http://quickstart:11000/oozie -status
+
+$ find /usr -name examples
+
+$ oozie job -oozie http://quickstart:11000/oozie -config /home/.../job.properties -run
+
+$ oozie job -oozie http://quickstart:11000/oozie -config /home/.../job.properties -info job_id 

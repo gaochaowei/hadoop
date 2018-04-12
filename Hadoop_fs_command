@@ -1,0 +1,52 @@
+$ hadoop jar
+         fsck
+
+$ hadoop fs -help appendToFile
+            -usage appendToFile
+                (simplified help)
+            -appendToFile
+                (local -> hdfs)
+            -cat
+                pattern
+                -ignoreCrc
+            -checksum
+                pattern
+            -chown
+                -R root:supergroup /user/cloudera
+            -chgrp
+            -chmod
+            -cp
+                -p (preserver)
+                -f (force)
+                -l (replicate factor l)
+            -copyFromLocal
+            -put
+            -moveFromLocal
+            -moveToLocal
+            -mv
+            -copyToLocal
+            -get
+                -ignoreCrc
+                -p
+                -crc
+            -count
+            -df
+            -du
+                -h
+                -s (total)
+            -expunge
+            -find
+            -getmerge
+            -mkdir
+            -setrep 3 path
+                (recursive)
+                -w (wait)
+            -stat
+                %b%g%n%o%r%u%Y path
+            -tail
+            -test
+                -d
+            -text
+            -touchz
+                (empty file)
+

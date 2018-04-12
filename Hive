@@ -1,0 +1,23 @@
+hive> show databases;
+
+hive> use default;
+
+hive> dfs
+
+hive> describe formatted TABLE;
+
+hive> set hive.execution.engine=mr; (only affect current session)
+hive> set hive.log.dir;
+hive> set hive.metastore.warehouse.engine;
+$ hive -e "hive command"
+$ hive -f local_file
+
+hive> set parquet.compression=SNAPPY; --this is the default actually
+hive> CREATE TABLE testsnappy_pq
+      STORED AS PARQUET
+      AS SELECT * FROM sourcetable;
+
+hive> CREATE TABLE testsnappy_orc
+      STORED AS ORC
+      TBLPROPERTIES("orc.compress"="snappy")
+      AS SELECT * FROM sourcetable;
