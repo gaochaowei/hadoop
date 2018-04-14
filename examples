@@ -1,0 +1,7 @@
+hadoop fs -text /user/cloudera/retail_db/orders_text_snappy/*.snappy | tail
+
+--fields-terminated-by \\001
+--fields-terminated-by '\001'
+
+--fields-terminated-by \|
+--fields-terminated-by '|'

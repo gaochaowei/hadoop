@@ -1,0 +1,9 @@
+Sqoop
+===========
+--as-textfile
+--as-sequencefile
+--as-avrodatafile
+--as-parquetfile
+
+--hive-import
+    hive-import only import as text file format

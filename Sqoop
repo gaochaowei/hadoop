@@ -1,6 +1,8 @@
 HADOOP HOME: $HADOOP_HOME, /usr/lib/hadoop
 HADOOP CONFIG DIR: $HADOOP_CONF_DIR, $HADOOP_HOME/conf/
 
+$ sqopo fs -help import
+
 $ sqoop list-databases
         list-tables
         eval --query "mysql commands"
@@ -61,7 +63,7 @@ Incremental import arguments
 Output line formatting arguments
     --enclosed-by <char>
     --escaped-by <char>
-    --fields-terminated-by \001
+    --fields-terminated-by '\001'
     --lines-terminated-by <char>
     --optionally-enclosed-by <char>
     --mysql-delimiters

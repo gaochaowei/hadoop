@@ -1,17 +1,3 @@
-Sqoot
-===============
---as-textfile
---as-vrodatafile
---as-parquetfile
---as-sequencefile
-
---compress
---compression-codec Snappy
---compression-codec GZip
-
---compression-codec org.apache.hadoop.io.compress.SnappyCodec
-It is a good idea to use the --as-sequencefile option with this compression option.
-
 Spark
 ===============
 conf = SparkConf()
@@ -27,6 +13,7 @@ df_rdd.saveAsTextFile(filename,compressionCodecClass="org.apache.hadoop.io.compr
 df.sqlContext().setConf("spark.sql.parquet.compression.codec", "snappy")
 sqlContext.sql("SET spark.sql.parquet.compression.codec=snappy")
 
+df.sqlContext().setConf("spark.sql.parquet.compression.codec", "uncompressed")
             
 Hive
 ===============

@@ -1,0 +1,38 @@
+Sqoot 1.4.6-cdh5.13.0
+=====================
+
+Format   | Compression | File                                        | Size
+--------------------------------------------------------------------------------
+text       -             part-m-00000                                  2999944
+text       snappy        part-m-00000.snappy                            891737
+text       gzip          part-m-00000.gz                                471106
+sequence   -             part-m-00000                                  3520274
+sequence   snappy        part-m-00000                                  1165923
+sequence   gzip          part-m-00000                                   626925
+avro       -             part-m-00000.avro                             1779793
+avro       snappy        part-m-00000.avro                              660198
+avro       gzip          -                                                   -
+parquet    -             fd7dc1f5-08b1-45ca-94c0-02df71f18d61.parquet   488257
+parquet    snappy        -                                                   -
+parquet    gzip          -                                                   -
+
+Hive: --hive-import
+Format   | Compression | Size    | avro.schema.url
+--------------------------------------------
+text       -             2999944   ?
+text       snappy         891603   ?
+text       gzip           471106   ?
+sequence   -                   -   -
+avro       -                   -   -
+parquet    -              488256   avsc
+parquet    snappy              -   -
+parquet    gzip                -   -
+
+
+Spark 1.6.0
+========================
+Format   | Compression | File                                                             | Size
+--------------------------------------------------------------------------------------------------
+parquet    -                    part-r-00000-ada01851-66c2-4849-8ffe-32c8712739df.parquet   488737
+parquet    snappy        part-r-00000-c239dada-b837-4789-8832-c0b08e5bfa47.snappy.parquet   488079
+parquet    gzip              part-r-00000-086b2421-3702-48aa-9496-6b47ed9c9ae9.gz.parquet   276993

@@ -1,0 +1,13 @@
+Codec
+===========
+org.apache.hadoop.io.compress.CompressionCodec
+    + org.apache.hadoop.io.compress.SnappyCodec
+    + org.apache.hadoop.io.compress.GzipCodec
+
+Sqoop
+===========
+org.apache.hadoop.io.compress.SnappyCodec
+org.apache.hadoop.io.compress.GzipCodec
+
+-z --compress
+--compression-codec gzip|snappy
