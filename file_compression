@@ -6,8 +6,51 @@ org.apache.hadoop.io.compress.CompressionCodec
 
 Sqoop
 ===========
-org.apache.hadoop.io.compress.SnappyCodec
-org.apache.hadoop.io.compress.GzipCodec
-
 -z --compress
---compression-codec gzip|snappy
+Gzip                    | Snappy
+-----------------------------------------
+--compression-codec gzip| --compression-codec gzip
+
+Hive
+===========
+hive.exec.compress.output=false
+mapred.output.compression.codec=org.apache.hadoop.io.compress.DefaultCodec
+mapred.output.compression.type=BLOCK
+
+text, sequence
+----------------
+hive> hive.exec.compress.output=true
+hive> mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec
+hive> mapred.output.compression.codec=org.apache.hadoop.io.compress.GzipCodec
+
+parquet
+----------------
+hive> set parquet.compression=SNAPPY;
+hive> set parquet.compression=GZIP;
+hive> set parquet.compression=UNCOMPRESSED;
+
+Avro
+----------------
+hive> set hive.exec.compress.output=true;
+hive> set avro.output.codec=snappy;
+
+ORC
+----------------
+TBLPROPERTIES ("orc.compress"="ZLIB") or ("orc.compress"="SNAPPY") or ("orc.compress"="NONE")
+hive> set orc.compress=SNAPPY;
+hive> set orc.compress=ZLIB;
+hive> set orc.compress=NONE;
+
+Spark
+===========
+conf = SparkConf()
+conf.set("spark.hadoop.mapred.output.compress", "true")
+conf.set("spark.hadoop.mapred.output.compression.codec", "org.apache.hadoop.io.compress.GzipCodec")
+conf.set("spark.hadoop.mapred.output.compression.type", "BLOCK")
+
+df_rdd = self.df.toJSON()
+df_rdd.saveAsTextFile(filename,compressionCodecClass="org.apache.hadoop.io.compress.GzipCodec")
+
+df.sqlContext().setConf("spark.sql.parquet.compression.codec", "uncompressed")
+df.sqlContext().setConf("spark.sql.parquet.compression.codec", "snappy")
+sqlContext.sql("SET spark.sql.parquet.compression.codec=snappy")

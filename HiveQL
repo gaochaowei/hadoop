@@ -1,3 +1,52 @@
+CREATE TABLE Statement
+=======================
+Explicit column definitions:
+  CREATE [EXTERNAL] TABLE [IF NOT EXISTS] [db_name.]table_name
+  (col_name data_type
+    [COMMENT 'col_comment']
+    [, ...]
+  )
+  [PARTITIONED BY (col_name data_type [COMMENT 'col_comment'], ...)]
+  [COMMENT 'table_comment']
+  [WITH SERDEPROPERTIES ('key1'='value1', 'key2'='value2', ...)]
+  [
+   [ROW FORMAT row_format] [STORED AS file_format]
+  ]
+  [LOCATION 'hdfs_path']
+  [TBLPROPERTIES ('key1'='value1', 'key2'='value2', ...)]
+  [CACHED IN 'pool_name' [WITH REPLICATION = integer] | UNCACHED]
+
+CREATE TABLE AS SELECT (CTAS):
+  CREATE [EXTERNAL] TABLE [IF NOT EXISTS] db_name.]table_name
+    [PARTITIONED BY (col_name[, ...])]
+    [COMMENT 'table_comment']
+    [WITH SERDEPROPERTIES ('key1'='value1', 'key2'='value2', ...)]
+    [
+     [ROW FORMAT row_format] [STORED AS ctas_file_format]
+    ]
+    [LOCATION 'hdfs_path']
+    [TBLPROPERTIES ('key1'='value1', 'key2'='value2', ...)]
+    [CACHED IN 'pool_name' [WITH REPLICATION = integer] | UNCACHED]
+  AS
+    select_statemen
+Column definitions inferred from data file:
+  CREATE [EXTERNAL] TABLE [IF NOT EXISTS] [db_name.]table_name
+    LIKE PARQUET 'hdfs_path_of_parquet_file'
+    [COMMENT 'table_comment']
+    [PARTITIONED BY (col_name data_type [COMMENT 'col_comment'], ...)]
+    [WITH SERDEPROPERTIES ('key1'='value1', 'key2'='value2', ...)]
+    [
+     [ROW FORMAT row_format] [STORED AS file_format]
+    ]
+    [LOCATION 'hdfs_path']
+    [TBLPROPERTIES ('key1'='value1', 'key2'='value2', ...)]
+    [CACHED IN 'pool_name' [WITH REPLICATION = integer] | UNCACHED]
+  data_type:
+      primitive_type
+    | array_type
+    | map_type
+    | struct_type
+
 hive> alter table rename to
 
 hive> create external table TBL
@@ -14,7 +63,7 @@ hive> create external table TBL ... STORED AS AVRO;
 
 hive> create external table TBL ...
       ROW FORMAT delimited
-      fields terminated b y'|'
+      fields terminated by '|'
       collection items terminated by ','
       map keys terminated by ':'
       lines terminated by '\n'
@@ -39,3 +88,25 @@ hive> set hive.exec.dynamic.partition.mode=strict;
 hive> create table order_strict (order_id int, order_date string, order_customer_id int, order_status string)
       partition by (order_year string, order_month string)
 hive> insert into order_strict partition(order_year='2013', order_month) select order_month, ...
+
+CREATE TABLE apachelog (
+  host STRING,
+  identity STRING,
+  user STRING,
+  time STRING,
+  request STRING,
+  status STRING,
+  size STRING,
+  referer STRING,
+  agent STRING)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'
+WITH SERDEPROPERTIES (
+  "input.regex" = "([^]*) ([^]*) ([^]*) (-|\\[^\\]*\\]) ([^ \"]*|\"[^\"]*\") (-|[0-9]*) (-|[0-9]*)(?: ([^ \"]*|\".*\") ([^ \"]*|\".*\"))?"
+)
+STORED AS TEXTFILE;
+
+ADD JAR /usr/lib/hive-hcatalog/lib/hive-hcatalog-core.jar;
+
+CREATE TABLE my_table(a string, b bigint, ...)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE;

@@ -1,0 +1,9 @@
+$ hadoop fs -get /user/hive/warehouse/retail_stage.db/orders/part-m-00000.avro
+$ avro-tools getschema part-m-00000.avro > orders.avsc
+$ hadoop fs -mkdir /user/hive/schemas
+$ hadoop fs -ls /user/hive/schemas/order
+$ hadoop fs -copyFromLocal orders.avsc /user/hive/schemas/order
+
+hive> create external table orders_sqoop
+      STORED AS AVRO LOCATION '/user/hive/warehouse/retail_stage.db/orders'
+      TBLPROPERTIES ('avro.schema.url'='/user/hive/schemas/order/orders.avsc')

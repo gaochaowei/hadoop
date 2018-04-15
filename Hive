@@ -8,6 +8,9 @@ hive> dfs
 
 hive> describe formatted TABLE;
 
+hive> ste;
+hive> set -v;
+
 hive> set hive.execution.engine=mr; (only affect current session)
 hive> set hive.log.dir;
 hive> set hive.metastore.warehouse.engine;

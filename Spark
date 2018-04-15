@@ -1,0 +1,12 @@
+$ ./bin/spark-submit
+Usage: spark-submit [options] <app jar | python file> [app arguments]
+Usage: spark-submit --kill [submission ID] --master [spark://...]
+Usage: spark-submit --status [submission ID] --master [spark://...]
+Usage: spark-submit run-example [options] example-class [example args]
+
+$ spark-submit example.py
+
+$ spark-submit --class com.cloudera.sparkwordcount.JavaWordCount \
+--master yarn --deploy-mode client \
+--driver-memory 4g –num-executors 2 --executor-memory 2g --executor-cores 2 \
+sparkwordcount-1.0-SNAPSHOT-jar-with-dependencies.jar hdfs://namenode_host:8020/path/to/inputfile.txt 2

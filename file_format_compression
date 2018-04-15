@@ -28,6 +28,28 @@ parquet    -              488256   avsc
 parquet    snappy              -   -
 parquet    gzip                -   -
 
+Hive
+========================
+Create table, insert into select from
+Format   | Compression | File             | Size
+------------------------------------------------------
+text       -             000000_0           2999944
+text       snappy        000000_0.snappy     891603
+text       gzip          000000_0.gz         471106
+parquet    -             000000_0            494709
+parquet    snappy        000000_0            487468
+parquet    gzip          000000_0            276346
+sequence   -             000000_0           3864387
+sequence   snappy        000000_0            999525
+sequence   gzip          000000_0            554116
+sequence   deflate       000000_0            553927
+avro       -             000000_0           2882090
+avro       snappy        000000_0            737045
+avro       deflate       000000_0            474991
+orc        -             000000_0            193489
+orc        snappy        000000_0            185334
+orc        zlib          000000_0            163094
+
 
 Spark 1.6.0
 ========================

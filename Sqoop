@@ -130,3 +130,6 @@ Code generation arguments:
     --outdir <dir>	Output directory for generated code
     --package-name <name>	Put auto-generated classes in this package
     --map-column-java <m>	Override default mapping from SQL type to Java type for configured columns.
+
+??? --where and --boundary-query
+--outdir

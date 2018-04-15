@@ -1,9 +1,28 @@
 Sqoop
 ===========
---as-textfile
---as-sequencefile
---as-avrodatafile
---as-parquetfile
+Text          | Sequence          | Avro              | Parquet
+-------------------------------------------------------------------------
+--as-textfile | --as-sequencefile | --as-avrodatafile | --as-parquetfile
 
 --hive-import
-    hive-import only import as text file format
+Text          | Sequence          | Avro              | Parquet
+-------------------------------------------------------------------------
+--as-textfile | -                 | -                 | --as-parquetfile
+
+Hive
+===========
+STORED AS PARQUET
+  | TEXTFILE
+  | AVRO
+  | SEQUENCEFILE
+  | RCFILE
+  | ORC
+CTAS:
+    PARQUET
+  | TEXTFILE
+
+Spark
+===========
+import com.databricks.spark.avro._
+
+
