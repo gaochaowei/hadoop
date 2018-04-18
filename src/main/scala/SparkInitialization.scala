@@ -1,14 +1,14 @@
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.{SparkConf, SparkContext}
 
-val sc = new SparkContext(new SparkConf().setAppName("Spark Read"))
+val sc = new SparkContext(new SparkConf().setAppName("050-Spark Read"))
 val sqlContext = new SQLContext(sc)
 
-println("\n========= Spark Conf ===========")
+println("\n========= 050-Spark Conf ===========")
 println(sc.getConf.toDebugString)
 """
   |park.app.id=application_1523883615638_0001
-  |spark.app.name=Spark shell
+  |spark.app.name=050-Spark shell
   |spark.authenticate=false
   |spark.authenticate.enableSaslEncryption=false
   |spark.driver.appUIAddress=http://10.0.2.15:4040
@@ -1282,13 +1282,13 @@ println(debugString)
   |yarn.nodemanager.health-checker.script.timeout-ms=1200000
   |yarn.nodemanager.hostname=0.0.0.0
   |yarn.nodemanager.keytab=/etc/krb5.keytab
-  |yarn.nodemanager.linux-container-executor.cgroups.hierarchy=/hadoop-yarn
-  |yarn.nodemanager.linux-container-executor.cgroups.mount=false
-  |yarn.nodemanager.linux-container-executor.cgroups.strict-resource-usage=false
-  |yarn.nodemanager.linux-container-executor.nonsecure-mode.limit-users=true
-  |yarn.nodemanager.linux-container-executor.nonsecure-mode.local-user=nobody
-  |yarn.nodemanager.linux-container-executor.nonsecure-mode.user-pattern=^[_.A-Za-z0-9][-@_.A-Za-z0-9]{0,255}?[$]?$
-  |yarn.nodemanager.linux-container-executor.resources-handler.class=org.apache.hadoop.yarn.server.nodemanager.util.DefaultLCEResourcesHandler
+  |yarn.nodemanager.003-Linux-container-executor.cgroups.hierarchy=/hadoop-yarn
+  |yarn.nodemanager.003-Linux-container-executor.cgroups.mount=false
+  |yarn.nodemanager.003-Linux-container-executor.cgroups.strict-resource-usage=false
+  |yarn.nodemanager.003-Linux-container-executor.nonsecure-mode.limit-users=true
+  |yarn.nodemanager.003-Linux-container-executor.nonsecure-mode.local-user=nobody
+  |yarn.nodemanager.003-Linux-container-executor.nonsecure-mode.user-pattern=^[_.A-Za-z0-9][-@_.A-Za-z0-9]{0,255}?[$]?$
+  |yarn.nodemanager.003-Linux-container-executor.resources-handler.class=org.apache.hadoop.yarn.server.nodemanager.util.DefaultLCEResourcesHandler
   |yarn.nodemanager.local-cache.max-files-per-directory=8192
   |yarn.nodemanager.local-dirs=${hadoop.tmp.dir}/nm-local-dir
   |yarn.nodemanager.localizer.address=${yarn.nodemanager.hostname}:8040

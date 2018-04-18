@@ -1,0 +1,109 @@
+UNIX
+===============================================================================
+$ uname -a
+Linux quickstart.cloudera 2.6.32-573.el6.x86_64 #1 SMP Thu Jul 23 15:44:03 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+
+$ lsb_release -a
+LSB Version:	:base-4.0-amd64:base-4.0-noarch:core-4.0-amd64:core-4.0-noarch
+Distributor ID:	CentOS
+Description:	CentOS release 6.7 (Final)
+Release:	6.7
+Codename:	Final
+
+$env
+ORBIT_SOCKETDIR=/tmp/orbit-cloudera
+HOSTNAME=quickstart.cloudera
+TERM=xterm
+SHELL=/bin/bash
+HISTSIZE=1000
+XDG_SESSION_COOKIE=b583246d032c70336cbf004a00000006-1523883584.273475-1455576691
+GTK_RC_FILES=/etc/gtk/gtkrc:/home/cloudera/.gtkrc-1.2-gnome2
+WINDOWID=56664389
+ANT_HOME=/usr/local/apache-ant/apache-ant-1.9.2
+USER=cloudera
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;05;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lz=01;31:*.xz=01;31:*.bz2=01;31:*.tbz=01;31:*.tbz2=01;31:*.bz=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.axa=01;36:*.oga=01;36:*.spx=01;36:*.xspf=01;36:
+GNOME_KEYRING_SOCKET=/tmp/keyring-kNU8nT/socket
+SSH_AUTH_SOCK=/tmp/keyring-kNU8nT/socket.ssh
+SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/6722,unix/unix:/tmp/.ICE-unix/6722
+USERNAME=cloudera
+PATH=/usr/local/firefox:/sbin:/usr/java/jdk1.7.0_67-cloudera/bin:/usr/local/apache-ant/apache-ant-1.9.2/bin:/usr/local/apache-maven/apache-maven-3.0.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/cloudera/bin
+MAIL=/var/spool/mail/cloudera
+DESKTOP_SESSION=gnome
+PWD=/home/cloudera
+JAVA_HOME=/usr/java/jdk1.7.0_67-cloudera
+GDM_KEYBOARD_LAYOUT=us
+LANG=en_US.UTF-8
+GDM_LANG=en_US.UTF-8
+GDMSESSION=gnome
+SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
+HISTCONTROL=ignoredups
+HOME=/home/cloudera
+M2_HOME=/usr/local/apache-maven/apache-maven-3.0.4
+SHLVL=2
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LOGNAME=cloudera
+CVS_RSH=ssh
+DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-AL4VItjUdE,guid=094922e36747c78d437168ac00000021
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+WINDOWPATH=1
+DISPLAY=:0.0
+G_BROKEN_FILENAMES=1
+COLORTERM=gnome-terminal
+XAUTHORITY=/var/run/gdm/auth-for-cloudera-3O1YhP/database
+_=/usr/bin/env
+
+Sqoop
+===============================================================================
+$ sqoop version
+Warning: /usr/lib/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+18/04/18 09:45:50 INFO sqoop.Sqoop: Running Sqoop version: 1.4.6-cdh5.13.0
+Sqoop 1.4.6-cdh5.13.0
+git commit id
+Compiled by jenkins on Wed Oct  4 11:04:44 PDT 2017
+
+Hive
+===============================================================================
+$ hive --version
+Hive 1.1.0-cdh5.13.0
+Subversion file:///data/jenkins/workspace/generic-package-rhel64-6-0/topdir/BUILD/hive-1.1.0-cdh5.13.0 -r Unknown
+Compiled by jenkins on Wed Oct 4 11:06:55 PDT 2017
+From source with checksum 4c9678e964cc1d15a0190a0a1867a837
+
+Flume
+===============================================================================
+$ flume-ng version
+Flume 1.6.0-cdh5.13.0
+Source code repository: https://git-wip-us.apache.org/repos/asf/flume.git
+Revision: 771282577aadcf61073e7cb77a31ef5cd6140fc4
+Compiled by jenkins on Wed Oct  4 11:11:36 PDT 2017
+From source with checksum c6892efdb6276b881b961e90d72bd762
+
+Pig
+===============================================================================
+pig -version
+log4j:WARN No appenders could be found for logger (org.apache.hadoop.util.Shell).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+Apache Pig version 0.12.0-cdh5.13.0 (rexported)
+compiled Oct 04 2017, 11:09:03
+
+Spark
+===============================================================================
+$ spark-shell --version
+version 1.6.0
+Using Scala version 2.10.5 (Java HotSpot(TM) 64-Bit Server VM, Java 1.7.0_67)
+Python 2.6.6 (r266:84292, Jul 23 2015, 15:22:56)
+
+Scala
+===============================================================================
+
+Python
+===============================================================================
+$ python --version
+Python 2.6.6
+
+MySql
+===============================================================================
+$ mysql --version;
+mysql  Ver 14.14 Distrib 5.1.73, for redhat-linux-gnu (x86_64) using readline 5.1

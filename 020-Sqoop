@@ -1,8 +1,6 @@
 HADOOP HOME: $HADOOP_HOME, /usr/lib/hadoop
 HADOOP CONFIG DIR: $HADOOP_CONF_DIR, $HADOOP_HOME/conf/
 
-$ sqopo fs -help import
-
 $ sqoop list-databases
         list-tables
         eval --query "mysql commands"

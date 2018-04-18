@@ -1,0 +1,76 @@
+$ ./bin/spark-submit
+Usage: spark-submit [options] <app jar | python file> [app arguments]
+Usage: spark-submit --kill [submission ID] --master [spark://...]
+Usage: spark-submit --status [submission ID] --master [spark://...]
+Usage: spark-submit run-example [options] example-class [example args]
+
+$ spark-submit example.py
+
+$ spark-submit --class com.cloudera.sparkwordcount.JavaWordCount \
+--master yarn --deploy-mode client \
+--driver-memory 4g –num-executors 2 --executor-memory 2g --executor-cores 2 \
+sparkwordcount-1.0-SNAPSHOT-jar-with-dependencies.jar hdfs://namenode_host:8020/path/to/inputfile.txt 2
+
+scala> :imports
+ 1) import scala.Predef._          (162 terms, 78 are implicit)
+ 2) import org.apache.spark.SparkContext._ (83 terms, 7 are implicit)
+ 3) import sqlContext.implicits._  (60 terms, 36 are implicit)
+ 4) import sqlContext.sql          (2 terms)
+ 5) import org.apache.spark.sql.functions._ (300 terms)
+
+cala> :implicits
+/* 7 implicit members imported from org.apache.spark.SparkContext */
+  /* 7 defined in org.apache.spark.SparkContext */
+  implicit def boolToBoolWritable(b: Boolean): org.apache.hadoop.io.BooleanWritable
+  implicit def bytesToBytesWritable(aob: Array[Byte]): org.apache.hadoop.io.BytesWritable
+  implicit def doubleToDoubleWritable(d: Double): org.apache.hadoop.io.DoubleWritable
+  implicit def floatToFloatWritable(f: Float): org.apache.hadoop.io.FloatWritable
+  implicit def intToIntWritable(i: Int): org.apache.hadoop.io.IntWritable
+  implicit def longToLongWritable(l: Long): org.apache.hadoop.io.LongWritable
+  implicit def stringToText(s: String): org.apache.hadoop.io.Text
+
+
+/* 36 implicit members imported from org.apache.spark.sql.SQLContext$implicits */
+  /* 1 defined in org.apache.spark.sql.SQLContext$implicits */
+  implicit def StringToColumn(sc: StringContext): org.apache.spark.sql.SQLContext.implicits.StringToColumn
+
+  /* 35 inherited from org.apache.spark.sql.SQLImplicits */
+  implicit def intRddToDataFrameHolder(data: org.apache.spark.rdd.RDD[Int]): org.apache.spark.sql.DataFrameHolder
+  implicit def localSeqToDataFrameHolder[A <: Product](data: Seq[A])(implicit evidence$7: reflect.runtime.universe.TypeTag[A]): org.apache.spark.sql.DataFrameHolder
+  implicit def longRddToDataFrameHolder(data: org.apache.spark.rdd.RDD[Long]): org.apache.spark.sql.DataFrameHolder
+  implicit def rddToDataFrameHolder[A <: Product](rdd: org.apache.spark.rdd.RDD[A])(implicit evidence$6: reflect.runtime.universe.TypeTag[A]): org.apache.spark.sql.DataFrameHolder
+  implicit def stringRddToDataFrameHolder(data: org.apache.spark.rdd.RDD[String]): org.apache.spark.sql.DataFrameHolder
+
+  implicit def newBooleanArrayEncoder: org.apache.spark.sql.Encoder[Array[Boolean]]
+  implicit def newBooleanEncoder: org.apache.spark.sql.Encoder[Boolean]
+  implicit def newBooleanSeqEncoder: org.apache.spark.sql.Encoder[Seq[Boolean]]
+  implicit def newByteArrayEncoder: org.apache.spark.sql.Encoder[Array[Byte]]
+  implicit def newByteEncoder: org.apache.spark.sql.Encoder[Byte]
+  implicit def newByteSeqEncoder: org.apache.spark.sql.Encoder[Seq[Byte]]
+  implicit def newDoubleArrayEncoder: org.apache.spark.sql.Encoder[Array[Double]]
+  implicit def newDoubleEncoder: org.apache.spark.sql.Encoder[Double]
+  implicit def newDoubleSeqEncoder: org.apache.spark.sql.Encoder[Seq[Double]]
+  implicit def newFloatArrayEncoder: org.apache.spark.sql.Encoder[Array[Float]]
+  implicit def newFloatEncoder: org.apache.spark.sql.Encoder[Float]
+  implicit def newFloatSeqEncoder: org.apache.spark.sql.Encoder[Seq[Float]]
+  implicit def newIntArrayEncoder: org.apache.spark.sql.Encoder[Array[Int]]
+  implicit def newIntEncoder: org.apache.spark.sql.Encoder[Int]
+  implicit def newIntSeqEncoder: org.apache.spark.sql.Encoder[Seq[Int]]
+  implicit def newLongArrayEncoder: org.apache.spark.sql.Encoder[Array[Long]]
+  implicit def newLongEncoder: org.apache.spark.sql.Encoder[Long]
+  implicit def newLongSeqEncoder: org.apache.spark.sql.Encoder[Seq[Long]]
+  implicit def newProductArrayEncoder[A <: Product](implicit evidence$3: reflect.runtime.universe.TypeTag[A]): org.apache.spark.sql.Encoder[Array[A]]
+  implicit def newProductEncoder[T <: Product](implicit evidence$1: reflect.runtime.universe.TypeTag[T]): org.apache.spark.sql.Encoder[T]
+  implicit def newProductSeqEncoder[A <: Product](implicit evidence$2: reflect.runtime.universe.TypeTag[A]): org.apache.spark.sql.Encoder[Seq[A]]
+  implicit def newShortArrayEncoder: org.apache.spark.sql.Encoder[Array[Short]]
+  implicit def newShortEncoder: org.apache.spark.sql.Encoder[Short]
+  implicit def newShortSeqEncoder: org.apache.spark.sql.Encoder[Seq[Short]]
+  implicit def newStringArrayEncoder: org.apache.spark.sql.Encoder[Array[String]]
+  implicit def newStringEncoder: org.apache.spark.sql.Encoder[String]
+  implicit def newStringSeqEncoder: org.apache.spark.sql.Encoder[Seq[String]]
+
+  implicit def localSeqToDatasetHolder[T](s: Seq[T])(implicit evidence$5: org.apache.spark.sql.Encoder[T]): org.apache.spark.sql.DatasetHolder[T]
+  implicit def rddToDatasetHolder[T](rdd: org.apache.spark.rdd.RDD[T])(implicit evidence$4: org.apache.spark.sql.Encoder[T]): org.apache.spark.sql.DatasetHolder[T]
+  implicit def symbolToColumn(s: Symbol): org.apache.spark.sql.ColumnName
+
+scala> :quit

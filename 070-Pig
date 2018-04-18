@@ -8,5 +8,7 @@ grunt> store ... into ...
 
 grunt> history
 
+grunt> fs <fs arguments>
+
 $ pig order_count.pig
 

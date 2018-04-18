@@ -1,0 +1,65 @@
+
+http://www.cloudera.com/documentation/cdh/5-1-x/Impala/Installing-and-Using-Impala/ciiu_datetime_functions.html
+
+hive> show functions like '*date*|*time*';
+current_date
+current_timestamp
+date_add
+date_format
+date_sub
+datediff
+from_unixtime
+from_utc_timestamp
+to_date
+to_unix_timestamp
+to_utc_timestamp
+unix_timestamp
+
+hive> describe function extended date_format;
+
+hive> select unix_timestamp();
+1524009750
+hive> select current_date();
+2018-04-18
+hive> select current_timestamp();
+2018-04-18 08:01:31.726
+
+//from_unixtime(unix_time, format) - returns unix_time in the specified format
+hive> select from_unixtime(1524009750);
+2018-04-18 08:02:30
+select from_unixtime(1524009750,'dd/MM/yyyy');
+18/04/2018
+
+//to_date(expr) - Extracts the date part of the date or datetime expression expr
+hive> select to_date(current_timestamp);
+2018-04-18
+hive> select to_date('2018-04-18 08:01:31.726');
+2018-04-18
+hive> select to_date('2018-04-18XYZ');
+2018-04-18
+
+//date_format(date/timestamp/string, fmt) - converts a date/timestamp/string to a value of string
+hive> select date_format('2018-04-18','dd/MM/yyyy');
+18/04/2018
+hive> select date_format('2018-04-18','dd/MM/yy');
+18/4/18
+hive> select date_format('2018-04-18','d/M/y');
+18/4/2018
+hive> select date_format(current_date,'d/M/yyyy');
+18/4/2018
+hive> select date_format('2018-04-18','dd/mm/yyyy');
+18/00/2018
+hive> select date_format('2018-04-18','DD/MM/YYYY');
+108/04/2018
+hive> select date_format(current_timestamp,'dd/MM/yyyy HH:mm:ss');
+18/04/2018 08:35:21
+hive> select date_format(current_timestamp,'dd/MM/yyyy HH:mm:ss.S');
+18/04/2018 08:36:01.30
+
+//unix_timestamp(date[, pattern]) - Converts the time to a number (same to to_unix_timestamp)
+hive> select unix_timestamp(current_date);
+1523980800
+hive> select unix_timestamp(current_timestamp);
+1524013586
+hive> select unix_timestamp('2018/04/18','yyyy/MM/dd');
+1523980800

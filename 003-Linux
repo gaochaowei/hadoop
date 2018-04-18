@@ -1,0 +1,9 @@
+$ hostname
+
+$ id gaoc
+$ useradd gaoc
+
+$ view file
+$ cat file
+
+$ sudo -u hdfs hadoop fs -chmod ...

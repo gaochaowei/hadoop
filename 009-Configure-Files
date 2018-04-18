@@ -1,0 +1,7 @@
+/etc/hadoop/conf/core-sites.xml
+    io.compress.codecs
+/etc/hadoop/conf/mapred-sites.xml
+    mapreduce.output.compress=true
+    mapreduce.output.fileoutputformat.compress=true
+    hive.exec.compress.output=true
+    mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.GZipCodec

@@ -1,0 +1,15 @@
+--enclosed-by \"
+--escaped-by \\
+--optionally-enclosed-by
+
+--fields-terminated-by ','
+--lines-terminated-by '\n'
+
+--null-string 'NA'
+--null-non-string -1
+
+--fields-terminated-by \\001
+--fields-terminated-by '\001'
+
+--fields-terminated-by \|
+--fields-terminated-by '|'

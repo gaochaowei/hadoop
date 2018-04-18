@@ -1,0 +1,28 @@
+:0	move cursor to first line in file
+:n  move cursor to line n
+:$  move cursor to last line in file
+
+
+^f	move forward one screen
+^b	move backward one screen
+^d	move down (forward) one half screen
+^u	move up (back) one half screen
+^l	redraws the screen
+^r	redraws the screen, removing deleted lines
+
+D	delete the remainder of the line, starting with current cursor position
+dd	delete entire current line
+Ndd delete N lines, beginning with the current line;
+
+yy	copy (yank, cut) the current line into the buffer
+Nyy copy (yank, cut) the next N lines, including the current line, into the buffer
+p	put (paste) the line(s) in the buffer into the text after the current line
+
+/s	search forward for occurrence of string in text
+?s	search backward for occurrence of string in text
+n	move to next occurrence of search string
+N	move to next occurrence of search string in opposite direction
+
+^g	provides the current line number, along with the total number of lines,
+    in the file at the bottom of the screen
+

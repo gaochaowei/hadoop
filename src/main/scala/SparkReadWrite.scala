@@ -1,7 +1,7 @@
 //RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
-val sc = new SparkContext(new SparkConf().setAppName("Spark Demo"))
+val sc = new SparkContext(new SparkConf().setAppName("050-Spark Demo"))
 
 val rdd = sc.textFile("/user/cloudera/retail_db/orders").coalesce(1)
 sc.sequenceFile("/user/cloudera/retail_db/orders", classOf[String], classOf[Int])
@@ -33,7 +33,7 @@ sqlContext.read.avro("/user/cloudera/write/orders_avro")
 val prop = new java.util.Properties
 prop.setProperty("user", "retail_dba")
 prop.setProperty("password", "cloudera")
-sqlContext.read.jdbc("jdbc:mysql://quickstart:3306/retail_db", "orders_spark_jdbc", prop)
+sqlContext.read.jdbc("jdbc:004-Mysql://quickstart:3306/retail_db", "orders_spark_jdbc", prop)
 
 df.toJSON.saveAsTextFile("/user/cloudera/write/orders_json")
 df.write.format("json").mode("append").option("path", "/user/cloudera/write/orders_json").save()
@@ -70,7 +70,7 @@ df.write.saveAsTable("orders_spark_save_as")
 //sqlContext.createExternalTable("orders_spark_create_external", "/user/cloudera/write/orders_spark_create_external")
 //create table orders_new like orders
 df.write.insertInto("orders_new")
-df.write.mode("overwrite").jdbc("jdbc:mysql://quickstart:3306/retail_db", "orders_spark_jdbc", prop)
+df.write.mode("overwrite").jdbc("jdbc:004-Mysql://quickstart:3306/retail_db", "orders_spark_jdbc", prop)
 
 df.toJSON.saveAsTextFile("/user/cloudera/write/orders_text_json")
 //Conversion

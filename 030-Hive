@@ -1,0 +1,55 @@
+hive-sites.xml
+
+$ hive -e "hive command"
+$ hive -f local_file
+hive> source file_name;
+
+hive> set;
+hive> set -v;
+hive> reset;
+hive> set hive.execution.engine=mr; (only affect current session)
+hive> set hive.log.dir;
+hive> set hive.metastore.warehouse.engine;
+
+hive> "hive.exec.compress.output" : "true"
+hive> "hive.exec.compress.intermediate" : "true"
+hive> "avro.output.codec": "snappy"
+
+hive> add file;
+hive> add files;
+hive> add jar;
+hive> add jars
+hive> add archive;
+hive> add archives;
+hive> delete file;
+hive> delete files;
+hive> delete jar;
+hive> delete jars
+hive> delete archive;
+hive> delete archives;
+hive> list archives;
+hive> list files;
+hive> list jars
+hive> list archives;
+
+hive> ! <shell command>
+hive> dfs <dfs command>
+
+hive> show databases;
+hive> describe database default;
+hive> describe database extended default;
+
+hive> show tables;
+hive> show create table orders;
+hive> describe orders;
+hive> describe extended orders;
+hive> describe formatted orders;
+
+hive> show functions;
+hive> show functions like '*date*|*time*';
+hive> describe function
+hive> describe function from_unixtime;
+hive> describe function extended from_unixtime;
+
+hive> select current_databases();
+hive> select current_user();

@@ -1,0 +1,55 @@
+Sqoop
+===============================================================================
+$sqoop help
+$sqoop help merge
+$sqoop merge --help
+
+HDFS Commands
+===============================================================================
+$ hadoop
+$ hadoop fs
+$ hadoop fs -help ls
+$ hadoop fs -usage ls
+
+Hive
+===============================================================================
+hive> show functions;
+hive> show functions like '*date*|*time*';
+hive> describe function
+hive> describe function from_unixtime;
+hive> describe function extended from_unixtime;
+
+Spark
+===============================================================================
+$ spark-submit --help
+$ spark-shell --help
+$ pyspark --help
+
+Scala
+===============================================================================
+scala> :help
+scala> :history
+scala> :imports
+scala> :implicits
+
+Python
+===============================================================================
+>>> help
+>>> help(rdd)
+>>> help(sc)
+>>> help(sqlContext)
+
+Flume
+===============================================================================
+$ flume-ng help
+
+Pig
+===============================================================================
+$ pig -help
+grunt> help
+
+MySql
+===============================================================================
+mysql> help;
+mysql> help show;
+

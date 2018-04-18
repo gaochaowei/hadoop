@@ -1,7 +1,7 @@
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.{SparkConf, SparkContext}
 
-val sc = new SparkContext(new SparkConf().setAppName("Spark Read"))
+val sc = new SparkContext(new SparkConf().setAppName("050-Spark Read"))
 val sqlContext = new SQLContext(sc)
 
 //orders (order_id int, order_date datetime, order_customer_id int, order_status varchar2)

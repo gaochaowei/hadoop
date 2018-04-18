@@ -4,7 +4,7 @@ Sqoot 1.4.6-cdh5.13.0
 Format   | Compression | File                                        | Size
 --------------------------------------------------------------------------------
 text       -             part-m-00000                                  2999944
-text       snappy        part-m-00000.snappy                            891737
+text       snappy        part-m-00000.snappy                            891603
 text       gzip          part-m-00000.gz                                471106
 sequence   -             part-m-00000                                  3520274
 sequence   snappy        part-m-00000                                  1165923
@@ -12,7 +12,7 @@ sequence   gzip          part-m-00000                                   626925
 avro       -             part-m-00000.avro                             1779793
 avro       snappy        part-m-00000.avro                              660198
 avro       gzip          -                                                   -
-parquet    -             fd7dc1f5-08b1-45ca-94c0-02df71f18d61.parquet   488257
+parquet    -             fd7dc1f5-08b1-45ca-94c0-02df71f18d61.parquet   488256
 parquet    snappy        -                                                   -
 parquet    gzip          -                                                   -
 
