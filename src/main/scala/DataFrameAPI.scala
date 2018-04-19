@@ -1,16 +1,24 @@
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.functions._
+import scala.Predef._
+import org.apache.spark.SparkContext._
 
 val sc = new SparkContext(new SparkConf().setAppName("050-Spark Read"))
 val sqlContext = new SQLContext(sc)
 
+import sqlContext.implicits._
+import sqlContext.sql
+
+sql("select * from orders")
 //orders (order_id int, order_date datetime, order_customer_id int, order_status varchar2)
 //order_items (order_item_id int, order_item_order_id int, order_item_product_id int, order_item_quantity int, order_item_subtotal float, order_item_product_price float)
 val orders = sqlContext.table("orders")
 val orderItems = sqlContext.table("order_items")
 
 orders.select("order_id","order_date")
-
+orders.select($"order_date")
+orders.selectExpr("from_unixtime(order_date/1000,'yyyy/MM/dd') as order_date")
 orders.drop("order_customer_id")
 
 orders.distinct

@@ -5,6 +5,7 @@ val sc = new SparkContext(new SparkConf().setAppName("050-Spark Read"))
 val sqlContext = new SQLContext(sc)
 
 println("\n========= 050-Spark Conf ===========")
+sc.getConf.getAll
 println(sc.getConf.toDebugString)
 """
   |park.app.id=application_1523883615638_0001
