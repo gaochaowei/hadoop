@@ -1,15 +1,19 @@
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.{SparkConf, SparkContext}
+val sc = new org.apache.spark.SparkContext(new org.apache.spark.SparkConf().setAppName("Spark shell"))
+val sqlContext: org.apache.spark.sql.SQLContext = new org.apache.spark.sql.hive.HiveContext(sc)
 
-val sc = new SparkContext(new SparkConf().setAppName("050-Spark Read"))
-val sqlContext = new SQLContext(sc)
+import scala.Predef._
+import org.apache.spark.SparkContext._
+import sqlContext.implicits._
+import sqlContext.sql
+import org.apache.spark.sql.functions._
+
+///////////WRITE CODE BELOW /////////////////////////
 
 println("\n========= 050-Spark Conf ===========")
-sc.getConf.getAll
 println(sc.getConf.toDebugString)
 """
   |park.app.id=application_1523883615638_0001
-  |spark.app.name=050-Spark shell
+  |spark.app.name=Spark shell
   |spark.authenticate=false
   |spark.authenticate.enableSaslEncryption=false
   |spark.driver.appUIAddress=http://10.0.2.15:4040
@@ -52,7 +56,7 @@ println(sc.getConf.toDebugString)
 
 println("\n========= SQL Context ===========")
 
-val debugString = sqlContext.getAllConfs.toArray.sorted.map{case (k, v) => k + "=" + v}.mkString("\n")
+val debugString = sqlContext.getAllConfs.toArray.sorted.map { case (k, v) => k + "=" + v }.mkString("\n")
 println(debugString)
 """
   |_hive.hdfs.session.path=file:/tmp/spark-7a09d126-987b-45d1-b5a6-d2c3d5a8dca5/scratch/cloudera/9368ca67-5d25-4b95-ab3c-c89d8160f364

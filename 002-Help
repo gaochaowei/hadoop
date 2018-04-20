@@ -91,10 +91,19 @@ scala> :implicits
   implicit def rddToDatasetHolder[T](rdd: org.apache.spark.rdd.RDD[T])(implicit evidence$4: org.apache.spark.sql.Encoder[T]): org.apache.spark.sql.DatasetHolder[T]
   implicit def symbolToColumn(s: Symbol): org.apache.spark.sql.ColumnName
 
+scala> sc.getClass
+scala> :reset
+scala> :quit
+
 Python
 ===============================================================================
 >>> help
+help> modules
+help> module spark
 >>> help("modules")
+>>> help("modules spark")
+>>> help("modules accu")
+>>> help("pyspark.accumulators")
 >>> help(rdd)
 >>> help(sc)
 >>> help(sqlContext)

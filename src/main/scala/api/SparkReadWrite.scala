@@ -1,8 +1,15 @@
+val sc = new org.apache.spark.SparkContext(new org.apache.spark.SparkConf().setAppName("Spark shell"))
+val sqlContext: org.apache.spark.sql.SQLContext = new org.apache.spark.sql.hive.HiveContext(sc)
+
+import scala.Predef._
+import org.apache.spark.SparkContext._
+import sqlContext.implicits._
+import sqlContext.sql
+import org.apache.spark.sql.functions._
+
+///////////WRITE CODE BELOW /////////////////////////
+
 //RDD
-import org.apache.spark.{SparkConf, SparkContext}
-
-val sc = new SparkContext(new SparkConf().setAppName("050-Spark Demo"))
-
 val rdd = sc.textFile("/user/cloudera/retail_db/orders").coalesce(1)
 sc.sequenceFile("/user/cloudera/retail_db/orders", classOf[String], classOf[Int])
 sc.wholeTextFiles("/user/cloudera/retail_db/oders")
@@ -18,8 +25,6 @@ rdd.saveAsTextFile("/user/cloudera/write/orders_text_lz4", classOf[org.apache.ha
 //DataFrame
 import com.databricks.spark.avro._
 import org.apache.spark.sql.SQLContext
-
-val sqlContext = new SQLContext(sc)
 
 val df = sqlContext.read.table("orders").coalesce(1)
 sqlContext.read.format("json").option("path", "/user/cloudera/retail_db/orders").load().coalesce(1)
