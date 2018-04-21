@@ -110,3 +110,8 @@ ADD JAR /usr/lib/hive-hcatalog/lib/hive-hcatalog-core.jar;
 CREATE TABLE my_table(a string, b bigint, ...)
 ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 STORED AS TEXTFILE;
+
+select order_item_id, order_item_order_id,
+    RANK() OVER (ORDER BY order_item_subtotal) as rank,
+    RANK() OVER (PARTITION BY order_item_order_id order by order_item_subtotal ) subrank
+    from order_items;

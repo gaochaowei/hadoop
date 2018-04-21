@@ -9,4 +9,7 @@ import org.apache.spark.sql.functions._
 
 ///////////WRITE CODE BELOW /////////////////////////
 
-$"orders"
+countDistinct("order_date","order_status")
+
+val w = org.apache.spark.sql.expressions.Window.orderBy($"order_date".desc)
+rank.over(w)
