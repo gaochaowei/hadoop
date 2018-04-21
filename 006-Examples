@@ -4,10 +4,10 @@ hive -e 'SHOW DATABASES' | xargs -I '{}' hive -e 'DROP DATABASE IF EXISTS {} CAS
 hadoop fs -rm -r -f /user/cloudera/*
 hadoop fs -rm -r -f /user/hive/warehouse/*
 
-//Sqoop Import to HSFS
-$
-sqoop import-all-tables --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --hive-import
-$
+Sqoop
+================================================================================
+Sqoop Hdfs Import
+---------------------------------------
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_text/orders --fields-terminated-by '\001';
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_text_snappy/orders --fields-terminated-by '\001' --compression-codec snappy;
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_text_gzip/orders --fields-terminated-by '\001' --compression-codec gzip;
@@ -18,143 +18,179 @@ sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_seqfile_snappy/orders --as-sequencefile --compression-codec snappy;
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_seqfile_gzip/orders --as-sequencefile --compression-codec gzip;
 
-// CREATE DATABASES
-hive>
-create database sqoop_hive_import_text;
-create database sqoop_hive_import_text_snappy;
-create database sqoop_hive_import_text_gzip;
-create database sqoop_hive_import_parquet;
-
-//Sqoop Hive Import
-$
+Sqoop Hive Import
+---------------------------------------
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-table sqoop_hive_import_text.orders;
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-table sqoop_hive_import_text_snappy.orders --compression-codec snappy;
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-table sqoop_hive_import_text_gzip.orders --compression-codec gzip;
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-database sqoop_hive_import_parquet --hive-table orders --as-parquetfile;
 
+sqoop import-all-tables --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --hive-import
 
-CREATE TABLE Statement (Existing file)
-======================================
-hive>
-create database hive_create_on_file;
-use hive_create_on_file;
+Hive
+================================================================================
 
-//TEXT FILE
-create external table orders_text (order_id int, order_date string, order_customer_id int, order_status string)
-row format delimited fields terminated by '\001'
+CREATE table with data from existing file
+--------------------------------------------------------------------------------
+
+create database hive_create_from_hdfs;
+use hive_create_from_hdfs;
+
+//TEXT
+
+create external table orders_text
+(ORDER_ID INT, ORDER_DATE STRING, ORDER_CUSTOMER_ID INT, ORDER_STATUS STRING)
 location '/user/cloudera/sqoop_import_text_snappy/orders';
 
-select * from hive_create_on_file.orders_text limit 1;
+select * from hive_create_from_hdfs.orders_text limit 1;
 
-//SEQUENCE FILE
+//SEQUENCE
+
 //Sqoop Sequence SerDe and Hive Sequence SerDe is different.
 //That’s why we need to use Hive-Sqoop-SerDe, refer above link for reference
 //https://questforthought.wordpress.com/2015/11/25/load-sqoop-sequence-files-in-hive/
 
-CREATE EXTERNAL TABLE orders_seqfile LIKE orders_avro
-STORED AS SEQUENCEFILE LOCATION '/user/cloudera/sqoop_import_seqfile/orders';
 
 //AVRO
 create external table orders_avro
-stored as AVRO location '/user/cloudera/sqoop_import_avro_snappy/orders'
-tblproperties('avro.schema.url'='/user/cloudera/sqoop_import_parquet/orders/.metadata/schema.avsc');
-
+    (order_id int, ORDER_DATE BIGINT, order_customer_id int, order_status string)
+    stored as avro location '/user/cloudera/sqoop_import_avro_snappy/orders';
 select * from orders_avro limit 1;
 
-create external table orders_avro
-row format serde 'org.apache.hadoop.hive.serde2.avro.avroserde'
-stored as inputformat 'org.apache.hadoop.hive.ql.io.avro.avrocontainerinputformat'
-outputformat 'org.apache.hadoop.hive.ql.io.avro.avrocontaineroutputformat'
-location '/user/cloudera/sqoop_import_avro_snappy/orders'
-tblproperties('avro.schema.url'='/user/cloudera/sqoop_import_parquet/orders/.metadata/schema.avsc');
+create external table orders_avro_2 like orders_text
+    stored as avro location '/user/cloudera/sqoop_import_avro_snappy/orders';
+alter table orders_avro_2 CHANGE ORDER_DATE ORDER_DATE BIGINT;
+select * from orders_avro_2 limit 1;
+
+create external table orders_avro_3
+    stored as avro location '/user/cloudera/sqoop_import_avro_snappy/orders'
+    TBLPROPERTIES('avro.schema.url'='/user/cloudera/sqoop_import_parquet/orders/.metadata/schema.avsc');
+select * from orders_avro_3 limit 1;
+
+create external table orders_avro_4
+    ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+    STORED AS INPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+              OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+    location '/user/cloudera/sqoop_import_avro_snappy/orders'
+    TBLPROPERTIES('avro.schema.url'='/user/cloudera/sqoop_import_parquet/orders/.metadata/schema.avsc');
+select * from orders_avro_4 limit 1;
 
 //PARQUET: not like text table where delimiters defined which causes error,
 //should like avro table, thus avro.schema.utl is copied
-CREATE EXTERNAL TABLE orders_parquet LIKE orders_avro
-STORED AS PARQUET LOCATION '/user/cloudera/sqoop_import_parquet/orders';
 
+create external table orders_parquet
+    (order_id int, ORDER_DATE BIGINT, order_customer_id int, order_status string)
+    stored as parquet location '/user/cloudera/sqoop_import_parquet/orders';
 select * from orders_parquet limit 1;
 
-CREATE TABLE Statement (Empty), INSERT INTO ... SELECT...
-======================================
-hive> create external table orders_text_new (order_id int, order_date string, order_customer_id int, order_status string)
-      row format delimited fields terminated by ',' location '/user/cloudera/orders_text_new';
+create external table orders_parquet_2 LIKE ORDERS_TEXT
+    stored as parquet location '/user/cloudera/sqoop_import_parquet/orders';
+alter table orders_parquet_2 CHANGE ORDER_DATE ORDER_DATE BIGINT;
+select * from orders_parquet_2 limit 1;
 
-hive> load data inpath '/user/cloudera/orders_gzip' into table orders_text_new;
-FILE COPY
+create external table orders_parquet_3 LIKE ORDERS_AVRO
+    stored as parquet location '/user/cloudera/sqoop_import_parquet/orders';
+select * from orders_parquet_3 limit 1;
 
-hive> create external table orders_text_new (order_id int, order_date string, order_customer_id int, order_status string)
-      row format delimited fields terminated by '|' location '/user/cloudera/orders_text_new';
-hive> insert into orders_text_new select * from orders;
+Create empty table with explicit column definitions
+================================================================================
 
-hive> create external table orders_text_new (order_id int, order_date string, order_customer_id int, order_status string)
-      location '/user/cloudera/orders_text_new';
-
-hive> set hive.exec.compress.output=true;
-deflat;
-
-hive> create external table orders_text_new (order_id int, order_date string, order_customer_id int, order_status string)
-      location '/user/cloudera/orders_text_new';
+// LOAD DATA INPATH '/user/cloudera/orders_gzip' INTO TABLE orders_text_new;
+// ONLY FILE COPY
 
 $ hive -e "set;" | grep "compress"
-hive> set hive.exec.compress.output=true;
-hive> set mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec;
-hive> insert into orders_text_new select * from orders;
-hive> set mapred.output.compression.codec=org.apache.hadoop.io.compress.GzipCodec;
-hive> insert into orders_text_new select * from orders;
-hive> select count(*) from orders_text_new;
 
-hive> set parquet.compression=gzip;
-hive> create external table orders_parquet_new (order_id int, order_date string, order_customer_id int, order_status string)
-      stored as parquet location '/user/cloudera/orders_parquet_new';
-hive> insert into orders_text_new select * from orders;
-hive> set parquet.compression=snappy;
-hive> set parquet.compression=uncompressed;
+create database hive_create_empty_for_insert;
+use hive_create_empty_for_insert;
 
-hive> set hive.exec.compress.output=true;
-hive> set mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec;
-hive> create external table orders_sequence_new (order_id int, order_date string, order_customer_id int, order_status string)
-      stored as sequencefile  location '/user/cloudera/orders_sequence_new';
-hive> insert into orders_sequence_new select * from orders;
+create table orders_text like hive_create_from_hdfs.orders_text;
+insert into orders_text select * from hive_create_from_hdfs.orders_text;
+select * from orders_text limit 1;
 
-hive> set hive.exec.compress.output=true;
-hive> set avro.output.codec=snappy;
-hive> create external table orders_avro_new (order_id int, order_date string, order_customer_id int, order_status string)
-      stored as avro  location '/user/cloudera/orders_avro_new';
-hive> insert into orders_avro_new select * from orders;
+set hive.exec.compress.output=true;
+set mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec;
+create table orders_text_snappy like orders_text;
+insert into orders_text_snappy select * from orders_text;
+select * from orders_text_snappy limit 1;
+set hive.exec.compress.output=false;
 
-hive> create external table orders_orc_new (order_id int, order_date string, order_customer_id int, order_status string)
-      stored as orc  location '/user/cloudera/orders_orc_new';
-hive> alter table orders_orc_new set tblproperties("orc.compress"="SNAPPY");
-hive> insert into orders_orc_new select * from orders;
-hive> alter table orders_orc_new set tblproperties("orc.compress"="ZLIB");
-hive> alter table orders_orc_new set tblproperties("orc.compress"="NONE");
-hive> set orc.compress=SNAPPY;
-hive> set orc.compress=ZLIB;
-hive> set orc.compress=NONE;
+create table orders_parquet like hive_create_from_hdfs.orders_parquet;
+insert into orders_parquet select * from hive_create_from_hdfs.orders_parquet;
+select * from orders_parquet limit 1;
 
-CREATE TABLE LIKE
-========================
-hive> create external table orders_avro_new like orders stored as avro location '/user/cloudera/orders_avro_new';
-hive> insert into orders_avro_new select * from orders;
+set parquet.compression=snappy;
+create table orders_parquet_snappy like orders_parquet;
+insert into orders_parquet_snappy select * from orders_parquet;
+select * from orders_parquet_snappy limit 1;
+
+set parquet.compression=gzip;
+create table orders_parquet_gzip like orders_parquet;
+insert into orders_parquet_gzip select * from orders_parquet;
+select * from orders_parquet_gzip limit 1;
+
+set parquet.compression=uncompressed;
+create table orders_parquet_uncompressed like orders_parquet;
+insert into orders_parquet_uncompressed select * from orders_parquet;
+select * from orders_parquet_uncompressed limit 1;
+
+create table orders_seqfile like orders_parquet stored as sequencefile;
+insert into orders_seqfile select * from orders_parquet;
+select * from orders_seqfile limit 1;
+
+set hive.exec.compress.output=true;
+set mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec;
+create table orders_seqfile_snappy like orders_seqfile;
+insert into orders_seqfile_snappy select * from orders_seqfile;
+select * from orders_seqfile_snappy limit 1;
+set hive.exec.compress.output=false;
+
+create table orders_avro like hive_create_from_hdfs.orders_avro;
+insert into orders_avro select * from hive_create_from_hdfs.orders_avro;
+select * from orders_avro limit 1;
+
+set hive.exec.compress.output=true;
+set avro.output.codec=snappy;
+create table orders_avro_snappy like orders_avro;
+insert into orders_avro_snappy select * from orders_avro;
+select * from orders_avro_snappy limit 1;
+set hive.exec.compress.output=false;
+
+create table orders_orc like orders_avro stored as orc;
+insert into orders_orc select * from orders_avro;
+select * from orders_orc_snappy limit 1;
+
+set hive.exec.compress.output=true;
+set orc.compress=SNAPPY;
+create table orders_orc_snappy like orders_orc;
+insert into orders_orc_snappy select * from orders_orc;
+select * from orders_orc_snappy limit 1;
+
+set hive.exec.compress.output=true;
+set orc.compress=ZLIB;
+create table orders_orc_zlib like orders_orc;
+insert into orders_orc_zlib select * from orders_orc;
+select * from orders_orc_zlib limit 1;
+
+set hive.exec.compress.output=true;
+set orc.compress=NONE;
+create table orders_orc_none like orders_orc;
+insert into orders_orc_none select * from orders_orc;
+select * from orders_orc_none limit 1;
+
+create table orders_orc_zlib2 like orders_orc tblproperties("orc.compress"="ZLIB");
+insert into orders_orc_zlib2 select * from orders_orc;
+select * from orders_orc_zlib2 limit 1;
+
+create table orders_orc_none2 like orders_orc tblproperties("orc.compress"="NONE");
+insert into orders_orc_none2 select * from orders_orc;
+select * from orders_orc_none2 limit 1;
 
 Create Table As Select (CTAS)
 ==============================
-hive> create table orders_avro_new stored as avro location '/user/cloudera/orders_avro_new' as select * from orders;
-!!! No External table for CTAS
+create database hive_create_as_select;
+use hive_create_as_select;
 
-hive> create table orders_parquet_new stored as parquet location '/user/cloudera/orders_parquet_new' as select * from orders;
+//CREATE-TABLE-AS-SELECT cannot create external table
 
-hive> create table orders_sequence_new stored as sequencefile location '/user/cloudera/orders_sequence_new' as select * from orders;
-
-hive> create table orders_text_new row format delimited fields terminated by '|' location '/user/cloudera/orders_text_new' as select * from orders;
-
-
-Column definitions inferred from data file:
-============================================
-hive>
-create database hive_create_like_parquet;
-use hive_create_like_parquet;
-
-create table orders like PARQUET '/user/cloudera/sqoop_import_parquet/orders' stored as avro location '/user/cloudera/orders_avro_new';
-DOES NOT WORK
+create table orders_parquet stored as parquet location '/user/cloudera/create-table-as-select/orders'
+    as select * from hive_create_from_hdfs.orders_parquet;
