@@ -13,3 +13,39 @@ sqoop import --connect jdbc:mysql://quickstart:3306/retail_db \
 import com.databricks.spark.avro._
 val orders = sqlContext.read.avro("/user/cloudera/problem1/orders")
 val orderItems = sqlContext.read.avro("/user/cloudera/problem1/order-items")
+
+val joined = orders.join(orderItems,orders("order_id")===orderItems("order_item_order_id")).select("order_id","order_date","order_status","order_item_subtotal")
+val result = joined.groupBy(from_unixtime($"order_date"/1000,"yyyy-MM-dd").alias("order_date"),$"order_status").agg(countDistinct("order_id").as("total_orders"), sum("order_item_subtotal").as("total_amount"))
+val orderedResult = result.orderBy($"order_date".desc,$"order_status",$"total_orders",$"total_amount".desc)
+sqlContext.setConf("apache.hadoop.spark.sql.parquet.compression","gzip")
+orderedResult.write.parquet("/user/cloudera/problem1/result4a-gzip")
+
+orders.registerTempTable("orders")
+orderItems.registerTempTable("order_items")
+val reseult4b = sqlContext.sql("""
+      select from_unixtime(order_date/1000,"yyyy-MM-dd") order_date, order_status, count(distinct(order_id)) total_orders, sum(order_item_subtotal) total_amount
+      from orders join order_items on order_id = order_item_order_id
+      group by order_date, order_status
+      order by order_date desc, order_status, total_orders, total_amount desc
+      """).coalesce(1)
+sqlContext.setConf("apache.hadoop.spark.sql.parquet.compression","gzip")
+reseult4b.write.parquet("/user/cloudera/problem1/result4b-gzip")
+
+val rdd = joined.rdd
+val result4c = rdd.groupBy(s=>(s.getLong(1),s.getString(2))).map(s=>(s._1._1,s._1._2,s._2.map(_(0)).toSet.size,s._2.map(_.getFloat(3)).reduce(_+_))).
+toDF("order_date","order_status","total_orders","total_amount").orderBy($"order_date".desc,$"order_status",$"total_orders",$"total_amount".desc).coalesce(1)
+sqlContext.setConf("apache.hadoop.spark.sql.parquet.compression","gzip")
+result4c.write.parquet("/user/cloudera/problem1/result4c-gzip")
+
+sqlContext.setConf("apache.hadoop.spark.sql.parquet.compression","snappy")
+orderedResult.coalesce(1).write.parquet("/user/cloudera/problem1/result4a-snappy")
+reseult4b.write.parquet("/user/cloudera/problem1/result4b-snappy")
+result4c.write.parquet("/user/cloudera/problem1/result4c-snappy")
+
+
+orderedResult.coalesce(1).map(_.mkString(",")).saveAsTextFile("/user/cloudera/problem1/result4a-csv")
+reseult4b.map(_.mkString(",")).saveAsTextFile("/user/cloudera/problem1/result4b-csv")
+result4c.map(_.mkString(",")).saveAsTextFile("/user/cloudera/problem1/result4c-csv")
+
+create table result(order_date varchar(20), order_status varchar(50), total_orders int, total_amount float);
+sqoop export --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table result --export-dir /user/cloudera/problem1/result4b-csv --input-fields-terminated-by ',';
