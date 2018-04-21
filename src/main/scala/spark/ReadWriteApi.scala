@@ -39,7 +39,7 @@ sqlContext.read.format("json").option("path", "/user/cloudera/retail_db/orders")
 sqlContext.sql("select * from orders")
 sqlContext.read.json("/user/cloudera/spark_write/orders_json")
 sqlContext.read.text("/user/cloudera/spark_write/orders_text")
-sqlContext.read.parquet("/user/cloudera/spark_write/orders_parquet")
+sqlContext.read.parquet("/user/cloudera/sqoop_import_hdfs/orders_parquet/")
 sqlContext.read.orc("/user/cloudera/spark_write/orders_orc")
 sqlContext.read.avro("/user/cloudera/spark_write/orders_avro")
 

@@ -8,24 +8,25 @@ Sqoop
 ================================================================================
 Sqoop Hdfs Import
 ---------------------------------------
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_text/orders --fields-terminated-by '\001';
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_text_snappy/orders --fields-terminated-by '\001' --compression-codec snappy;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_text_gzip/orders --fields-terminated-by '\001' --compression-codec gzip;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_avro/orders --as-avrodatafile;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_avro_snappy/orders --as-avrodatafile --compression-codec snappy;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_parquet/orders --as-parquetfile;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_seqfile/orders --as-sequencefile;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_seqfile_snappy/orders --as-sequencefile --compression-codec snappy;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_seqfile_gzip/orders --as-sequencefile --compression-codec gzip;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_text --fields-terminated-by '\001';
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_text_snappy --fields-terminated-by '\001' --compression-codec snappy;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_text_gzip --fields-terminated-by '\001' --compression-codec gzip;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_avro --as-avrodatafile;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_avro_snappy --as-avrodatafile --compression-codec snappy;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_parquet --as-parquetfile;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_seqfile --as-sequencefile;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_seqfile_snappy --as-sequencefile --compression-codec snappy;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --target-dir /user/cloudera/sqoop_import_hdfs/orders_seqfile_gzip --as-sequencefile --compression-codec gzip;
 
 Sqoop Hive Import
 ---------------------------------------
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-table sqoop_hive_import_text.orders;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-table sqoop_hive_import_text_snappy.orders --compression-codec snappy;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-table sqoop_hive_import_text_gzip.orders --compression-codec gzip;
-sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-database sqoop_hive_import_parquet --hive-table orders --as-parquetfile;
+hive> create database if not exists sqoop_hive_import;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-database sqoop_hive_import --hive-table orders_text.orders;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-database sqoop_hive_import --hive-table orders_text_snappy --compression-codec snappy;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-database sqoop_hive_import --hive-table orders_text_gzip --compression-codec gzip;
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --table orders -m 1 --hive-import --hive-database sqoop_hive_import --hive-table orders_parquet --as-parquetfile;
 
-sqoop import-all-tables --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --hive-import
+sqoop import-all-tables --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera --hive-import --hive-database sqoop_import_all;
 
 Hive
 ================================================================================
@@ -33,46 +34,51 @@ Hive
 CREATE table with data from existing file
 --------------------------------------------------------------------------------
 
-create database hive_create_from_hdfs;
+create database if not exists hive_create_from_hdfs;
 use hive_create_from_hdfs;
 
-//TEXT
+--TEXT
 
 create external table orders_text
 (ORDER_ID INT, ORDER_DATE STRING, ORDER_CUSTOMER_ID INT, ORDER_STATUS STRING)
-location '/user/cloudera/sqoop_import_text_snappy/orders';
+location '/user/cloudera/sqoop_import_hdfs/orders_text_snappy';
 
 select * from hive_create_from_hdfs.orders_text limit 1;
 
-//SEQUENCE
+--SEQUENCE
 
-//Sqoop Sequence SerDe and Hive Sequence SerDe is different.
-//That’s why we need to use Hive-Sqoop-SerDe, refer above link for reference
-//https://questforthought.wordpress.com/2015/11/25/load-sqoop-sequence-files-in-hive/
+--Sqoop Sequence SerDe and Hive Sequence SerDe is different.
+--That’s why we need to use Hive-Sqoop-SerDe, refer above link for reference
+--https://questforthought.wordpress.com/2015/11/25/load-sqoop-sequence-files-in-hive/
 
 
-//AVRO
+--AVRO
+$ hadoop fs -get /user/cloudera/sqoop_import_hdfs/orders_avro_snappy/part-m-00000.avro
+$ avro-tools getschema part-m-00000.avro > orders.avsc
+$ hadoop fs -mkdir /user/hive/schema
+$ hadoop fs -put orders.avsc /user/hive/schema/orders.avsc
+
 create external table orders_avro
     (order_id int, ORDER_DATE BIGINT, order_customer_id int, order_status string)
-    stored as avro location '/user/cloudera/sqoop_import_avro_snappy/orders';
+    stored as avro location '/user/cloudera/sqoop_import_hdfs/orders_avro_snappy';
 select * from orders_avro limit 1;
 
 create external table orders_avro_2 like orders_text
-    stored as avro location '/user/cloudera/sqoop_import_avro_snappy/orders';
+    stored as avro location '/user/cloudera/sqoop_import_hdfs/orders_avro_snappy';
 alter table orders_avro_2 CHANGE ORDER_DATE ORDER_DATE BIGINT;
 select * from orders_avro_2 limit 1;
 
 create external table orders_avro_3
-    stored as avro location '/user/cloudera/sqoop_import_avro_snappy/orders'
-    TBLPROPERTIES('avro.schema.url'='/user/cloudera/sqoop_import_parquet/orders/.metadata/schema.avsc');
+    stored as avro location '/user/cloudera/sqoop_import_hdfs/orders_avro_snappy'
+    TBLPROPERTIES('avro.schema.url'='/user/hive/schema/orders.avsc');
 select * from orders_avro_3 limit 1;
 
 create external table orders_avro_4
     ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
     STORED AS INPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
               OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
-    location '/user/cloudera/sqoop_import_avro_snappy/orders'
-    TBLPROPERTIES('avro.schema.url'='/user/cloudera/sqoop_import_parquet/orders/.metadata/schema.avsc');
+    location '/user/cloudera/sqoop_import_hdfs/orders_avro_snappy'
+    TBLPROPERTIES('avro.schema.url'='/user/hive/schema/orders.avsc');
 select * from orders_avro_4 limit 1;
 
 //PARQUET: not like text table where delimiters defined which causes error,
@@ -80,16 +86,16 @@ select * from orders_avro_4 limit 1;
 
 create external table orders_parquet
     (order_id int, ORDER_DATE BIGINT, order_customer_id int, order_status string)
-    stored as parquet location '/user/cloudera/sqoop_import_parquet/orders';
+    stored as parquet location '/user/cloudera/sqoop_import_hdfs/orders_parquet';
 select * from orders_parquet limit 1;
 
 create external table orders_parquet_2 LIKE ORDERS_TEXT
-    stored as parquet location '/user/cloudera/sqoop_import_parquet/orders';
+    stored as parquet location '/user/cloudera/sqoop_import_hdfs/orders_parquet';
 alter table orders_parquet_2 CHANGE ORDER_DATE ORDER_DATE BIGINT;
 select * from orders_parquet_2 limit 1;
 
 create external table orders_parquet_3 LIKE ORDERS_AVRO
-    stored as parquet location '/user/cloudera/sqoop_import_parquet/orders';
+    stored as parquet location '/user/cloudera/sqoop_import_hdfs/orders_parquet';
 select * from orders_parquet_3 limit 1;
 
 Create empty table with explicit column definitions

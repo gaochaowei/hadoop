@@ -1,0 +1,15 @@
+http://arun-teaches-u-tech.blogspot.sg/p/cca-175-prep-problem-scenario-1.html
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db \
+--username retail_dba --password cloudera \
+--table orders --target-dir /user/cloudera/problem1/orders \
+--as-avrodatafile -z --compression-codec snappy -m 1
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db \
+--username retail_dba --password cloudera \
+--table order_items --target-dir /user/cloudera/problem1/order-items \
+--as-avrodatafile -z --compression-codec snappy -m 1
+
+import com.databricks.spark.avro._
+val orders = sqlContext.read.avro("/user/cloudera/problem1/orders")
+val orderItems = sqlContext.read.avro("/user/cloudera/problem1/order-items")
