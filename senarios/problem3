@@ -2,15 +2,16 @@ http://arun-teaches-u-tech.blogspot.sg/p/cca-175-hadoop-and-spark-developer-exam
 2:45
 
 sqoop import-all-tables --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
- --warehouse-dir retail_stage.db --as-avrodatafile -z --compression-codec snappy -m 1
+ --warehouse-dir /user/hive/warehouse/retail_stage.db --as-avrodatafile -z --compression-codec snappy -m 1
 
 hadoop fs -get retail_stage.db/orders/part-m-00000.avro
 avro-tools getschema part-m-00000.avro > orders.avsc
+hadoop fs -put -f orders.avsc  /user/hive/schema/orders.avsc
 
 create database retail_stage;
 use retail_stage;
 
-create external table orders_sqoop stored as avro location '/user/cloudera/retail_stage.db/orders'
+create external table orders_sqoop stored as avro location '/user/hive/warehouse/retail_stage.db/orders'
     tblproperties("avro.schema.url"="/user/hive/schema/orders.avsc");
 3:07
 
@@ -34,6 +35,7 @@ select o1.* from orders_avro o1 where o1.order_date in (
         select o2.order_date, count(1) num from orders_avro o2 group by o2.order_date order by num desc limit 1) a);
 3:41
 
+vi
 hadoop fs -put -f orders.avsc  /user/hive/schema/orders.avsc
 3:48
 

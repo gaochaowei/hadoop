@@ -1,0 +1,18 @@
+avro
+==============
+hadoop fs -cat
+    --- see binary if compressed with snappy
+hadoop fs -text
+    --- see json like content even if compressed with snappy
+
+--username
+
+.toFloat
+
+cast(obj as decimal(10,2))
+
+TBLPROPERTIES ('avro.schema.url'='/user/hive/schemas/orders.avsc')
+
+nested query always use table qualifier select from orders o1
+
+insert overwrite TABLE ORDERS_AVRO PARTITION (ORDER_MONTH) ..
