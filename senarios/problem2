@@ -1,0 +1,28 @@
+http://arun-teaches-u-tech.blogspot.sg/p/cca-175-prep-problem-scenario-2.html
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db \
+--username retail_dba --password cloudera \
+--table products --target-dir  /user/cloudera/products \
+--fields-terminated-by '|'
+
+hadoop fs -mkdir problem2
+hadoop fs -mv /user/cloudera/products /user/cloudera/problem2/product
+
+hadoop fs -chmod 765 /user/cloudera/problem2/product/*
+
+val rdd = sc.textFile("/user/cloudera/problem2/product/").map(_.split('|')).map(s=>(s(1), s(4).toFloat)).filter(_._2<=100)
+val df = rdd.toDF("product_category","product_price")
+
+val resultDf = df.groupBy("product_category").agg(max($"product_price").as("max_price"),count("product_price").as("count"),avg($"product_price").as("avg_price"),min($"product_price").as("min_price"))
+resultDf.rdd.saveAsTextFile("/user/cloudera/problem2/products/result-df",classOf[org.apache.hadoop.io.compress.SnappyCodec])
+
+df.registerTempTable("product_catogoty_price")
+val resultSql = sqlContext.sql("""
+select product_category, max(product_price),count(),avg(product_price),min(product_price)
+from product_catogoty_price
+group by product_category""")
+resultSql.rdd.saveAsTextFile("/user/cloudera/problem2/products/result-sql",classOf[org.apache.hadoop.io.compress.SnappyCodec])
+
+val resultRdd = rdd.aggregateByKey(0.0,1,0.0,99999999.0)((r,p)=> (r._1.max(p),r._2+1,r._3+p,r._4.min(p)), (r1,r2)=>(r1._1.max(r2._1),r1._2+r2._2,r1._3+r2._3,r1._4.min(r2._4))).
+map(s=>(s._1, s._2._1,s._2._2,s._2._3/s._2._2,s._2._4))
+resultRdd.saveAsTextFile("/user/cloudera/problem2/products/result-rdd",classOf[org.apache.hadoop.io.compress.SnappyCodec])
