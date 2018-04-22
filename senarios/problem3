@@ -1,0 +1,51 @@
+http://arun-teaches-u-tech.blogspot.sg/p/cca-175-hadoop-and-spark-developer-exam_28.html
+2:45
+
+sqoop import-all-tables --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+ --warehouse-dir retail_stage.db --as-avrodatafile -z --compression-codec snappy -m 1
+
+hadoop fs -get retail_stage.db/orders/part-m-00000.avro
+avro-tools getschema part-m-00000.avro > orders.avsc
+
+create database retail_stage;
+use retail_stage;
+
+create external table orders_sqoop stored as avro location '/user/cloudera/retail_stage.db/orders'
+    tblproperties("avro.schema.url"="/user/hive/schema/orders.avsc");
+3:07
+
+select o1.* from orders_sqoop o1 where o1.order_date in (
+    select a.order_date from (
+        select o2.order_date, count(1) num from orders_sqoop o2 group by o2.order_date order by num desc limit 1) a);
+3:21
+
+create database retail;
+use retail;
+create table orders_avro(order_id int, order_date bigint, order_customer_id int, order_status string) partitioned by (order_month string) stored as avro;
+3:32
+
+hive -e "set;"|grep "partition"
+set hive.exec.dynamic.partition.mode=nonstrict;
+insert into orders_avro partition order_month select o.*, from_unixtime(cast(o.order_date/1000 as bigint),'YYYY-MM') order_month from retail_stage.orders_sqoop o;
+3:39
+
+select o1.* from orders_avro o1 where o1.order_date in (
+    select a.order_date from (
+        select o2.order_date, count(1) num from orders_avro o2 group by o2.order_date order by num desc limit 1) a);
+3:41
+
+hadoop fs -put -f orders.avsc  /user/hive/schema/orders.avsc
+3:48
+
+use retaii_stage;
+select * from orders_sqoop limit 10;
+select max(order_id) from orders_sqoop;
+insert into orders_sqoop values (68884,1,1,'PENDING','stype 1',1);
+insert into orders_sqoop values (68885,2,2,'DONE','stype 2',2);
+select * from orders_sqoop where order_id > 68883;
+3:55
+
+select o1.* from orders_sqoop o1 where o1.order_date in (
+    select a.order_date from (
+        select o2.order_date, count(1) num from orders_sqoop o2 group by o2.order_date order by num desc limit 1) a);
+3:57
