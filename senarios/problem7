@@ -5,37 +5,40 @@ sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_
 
 hadoop fs -get /user/cloudera/problem7/prework
 
-cp /etc/flume-ng/conf/flume-conf.properties.template problem7.conf
-agent.sources = seqGenSrc
-agent.channels = memoryChannel
-agent.sinks = loggerSink
+cp /etc/flume-ng/conf/flume-conf.properties.template p7a.conf
+
+----------------
+a1.sources = r1
+a1.channels = c1
+a1.sinks = k1
 
 # For each one of the sources, the type is defined
-agent.sources.seqGenSrc.type = avro
-agent.sources.seqGenSrc.bind = localhost
-agent.sources.seqGenSrc.port = 11112
-
-# The channel can be defined as follows.
-agent.sources.seqGenSrc.channels = memoryChannel
+a1.sources.r1.type = avro
+a1.sources.r1.bind = localhost
+a1.sources.r1.port = 11112
+a1.sources.r1.deserializer.schemaType = LITERAL
 
 # Each sink's type must be defined
-agent.sinks.loggerSink.type = hdfs
-agent.sinks.loggerSink.hdfs.path = /user/cloudera/problem7/sink
-agent.sinks.loggerSink.hdfs.fileSuffix = .avro
-agent.sinks.loggerSink.hdfs.fileType = DataStream
-agent.sinks.loggerSink.serializer = avro_event
-agent.sinks.loggerSink.serializer.compressionCodec=snappy
-
-#Specify the channel the sink should use
-agent.sinks.loggerSink.channel = memoryChannel
+a1.sinks.k1.type = hdfs
+a1.sinks.k1.hdfs.path = /user/cloudera/problem7/sink
+a1.sinks.k1.hdfs.fileSuffix = .avro
+a1.sinks.k1.hdfs.fileType = DataStream
+#a1.sinks.k1.serializer = avro_event
+a1.sinks.k1.serializer = org.apache.flume.sink.hdfs.AvroEventSerializer$Builder
 
 # Each channel's type is defined.
-agent.channels.memoryChannel.type = memory
-agent.channels.memoryChannel.capacity = 10000
-agent.channels.memoryChannel.transactionCapacity = 1000
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 10000
+a1.channels.c1.transactionCapacity = 1000
 
-flume-ng agent --name agent --conf-file problem7.conf
-    INFO source.AvroSource: Avro source seqGenSrc started
+# Bind the source and sink to the channel
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+----------------
+
+flume-ng agent --name a1 --conf-file p7a.conf
+    INFO source.AvroSource: Avro source r1 started
 flume-ng avro-client -H localhost -p 11112 -F /home/cloudera/prework/part-m-00000.avro
 
 Wait asynchronous flume job completed
@@ -44,37 +47,39 @@ Wait asynchronous flume job completed
 
 start_logs
 tail -F /opt/gen_logs/logs/access.log
-cp -f /etc/flume-ng/conf/flume-conf.properties.template problem7b.conf
-agent.sources = seqGenSrc
-agent.channels = memoryChannel
-agent.sinks = loggerSink
+cp -f /etc/flume-ng/conf/flume-conf.properties.template p7b.conf
+------------------------
+a1.sources = r1
+a1.channels = c1
+a1.sinks = k1
 
-agent.sources = seqGenSrc
-agent.channels = memoryChannel
-agent.sinks = loggerSink
+a1.sources = r1
+a1.channels = c1
+a1.sinks = k1
 
 # For each one of the sources, the type is defined
-agent.sources.seqGenSrc.type = exec
-agent.sources.seqGenSrc.command = tail -F /opt/gen_logs/logs/access.log
+a1.sources.r1.type = exec
+a1.sources.r1.command = tail -F /opt/gen_logs/logs/access.log
 
 # The channel can be defined as follows.
-agent.sources.seqGenSrc.channels = memoryChannel
+a1.sources.r1.channels = c1
 
 # Each sink's type must be defined
-agent.sinks.loggerSink.type = hdfs
-agent.sinks.loggerSink.hdfs.path = /user/cloudera/problem7/step2
-agent.sinks.loggerSink.hdfs.fileType = DataStream
-agent.sinks.loggerSink.hdfs.fileSuffix = .log
-agent.sinks.loggerSink.hdfs.writeFormat = Text
+a1.sinks.k1.type = hdfs
+a1.sinks.k1.hdfs.path = /user/cloudera/problem7/step2
+a1.sinks.k1.hdfs.fileType = DataStream
+a1.sinks.k1.hdfs.fileSuffix = .log
+a1.sinks.k1.hdfs.writeFormat = Text
 
 #Specify the channel the sink should use
-agent.sinks.loggerSink.channel = memoryChannel
+a1.sinks.k1.channel = c1
 
 # Each channel's type is defined.
-agent.channels.memoryChannel.type = memory
-agent.channels.memoryChannel.capacity = 1000
-agent.channels.memoryChannel.transactionCapacity = 200
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 200
+------------
 
-flume-ng agent --name agent --conf-file problem7b.conf
+flume-ng agent --name a1 --conf-file p7b.conf
 hadoop fs -ls /user/cloudera/problem7/step2
 5:42

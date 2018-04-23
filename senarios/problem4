@@ -48,3 +48,5 @@ SEQorg.apache.hadoop.io.Textorg.apache.hadoop.io.Textï¿½	ï¿½\ï¿½ï¿½8ï¿½ï¿½ï¿
 val ordersSeq = sc.sequenceFile("/user/cloudera/problem5/sequence",classOf[org.apache.hadoop.io.Text],classOf[org.apache.hadoop.io.Text])
 ordersSeq.map(x=>{var d = x._2.toString.split(','); (d(0).toInt,d(1).toLong,d(2).toInt,d(3))}).
     toDF("order_id","order_date","order_customer_id","order_status").write.orc("/user/cloudera/problem5/orc");
+
+df = sqlContext.read.parquet("/user/cloudera/problem5/parquet-snappy-compress")

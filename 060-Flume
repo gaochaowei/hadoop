@@ -1,20 +1,20 @@
 $ cp /etc/flume-ng/conf/flume-conf.properties.template demo.conf
 
 ============ START OF FILE demo.conf ==================
-# example.conf: A single-node Flume configuration
-
 # Name the components on this agent
 a1.sources = r1
-a1.sinks = k1
+a1.sinks = k1,k2
 a1.channels = c1
 
 # Describe/configure the source
-a1.sources.r1.type = netcat
-a1.sources.r1.bind = localhost
-a1.sources.r1.port = 44444
+a1.sources.r1.type = spooldir
+a1.sources.r1.spoolDir = /home/cloudera/logs
 
 # Describe the sink
-a1.sinks.k1.type = logger
+a1.sinks.k1.type = hdfs
+a1.sinks.k1.hdfs.path = /user/cloudera/demo
+
+a1.sinks.k2.type = logger
 
 # Use a channel which buffers events in memory
 a1.channels.c1.type = memory
@@ -24,6 +24,7 @@ a1.channels.c1.transactionCapacity = 100
 # Bind the source and sink to the channel
 a1.sources.r1.channels = c1
 a1.sinks.k1.channel = c1
+a1.sinks.k2.channel = c1
 
 ============ END OF FILE demo.conf ==================
 
