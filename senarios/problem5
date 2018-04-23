@@ -1,0 +1,114 @@
+http://arun-teaches-u-tech.blogspot.sg/p/cca-175-hadoop-and-spark-developer-exam_9.html
+
+//PREPARE
+mysql -u retail_dba -p
+use retail_db;
+create table products_replica as select * from products;
+alter table products_replica add primary key (product_id);
+alter table products_replica add column (product_grade int, product_sentiment varchar(100));
+update products_replica set product_grade = 1  where product_price > 500;
+update products_replica set product_sentiment  = 'WEAK'  where product_price between 300 and  500;
+11:07
+//
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table products_replica --target-dir /user/cloudera/problem5/products-text \
+--where "product_id>1 and product_id<=1000" -m 3 --null-string 'NOT-AVAILABLE' --null-non-string -1 \
+--fields-terminated-by '|'
+11:14
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table products_replica --target-dir /user/cloudera/problem5/products-text-part1 \
+--where "product_id<=1111" -m 2 --null-string 'NA' --null-non-string -1000 \
+--fields-terminated-by '*'
+11:17
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table products_replica --target-dir /user/cloudera/problem5/products-text-part2 \
+--where "product_id>1111" -m 5 --null-string 'NA' --null-non-string -1000 \
+--fields-terminated-by '*'
+11:18
+
+sqoop merge --new-data /user/cloudera/problem5/products-text-part2 --onto /user/cloudera/problem5/products-text-part1 \
+--target-dir /user/cloudera/problem5/products-text-both-parts --merge-key product_id \
+--jar-file /tmp/sqoop-cloudera/compile/be207cb042f71c04f79415d7d356c789/products_replica.jar \
+--class-name products_replica
+hadoop fs -cat /user/cloudera/problem5/products-text-part2/part*|wc
+    234    1685   36104
+hadoop fs -cat /user/cloudera/problem5/products-text-part1/part*|wc
+   1111    6958  150024
+hadoop fs -cat /user/cloudera/problem5/products-text-both-parts/part*|wc
+   1345    8643  186128
+11:25
+
+sqoop job --create job1 -- import \
+--connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table products_replica --target-dir /user/cloudera/problem5/products-incremental \
+--check-column product_id --incremental append --last-value 0
+sqoop job --exec job1
+hadoop fs -cat /user/cloudera/problem5/products-incremental/part* |wc
+   1345    8643  187359
+describe products_replica;
+select max(product_id) from products_replica;
+insert into products_replica values (1346,1,'A','A',1.0,'A',1,'A');
+insert into products_replica values (1347,1,'A','A',1.0,'A',2,'B');
+insert into products_replica values (1348,1,'A','A',1.0,'A',3,'C');
+sqoop job --exec job1
+hadoop fs -cat /user/cloudera/problem5/products-incremental/part* |wc
+   1348    8646  187422
+
+insert into products_replica values (1349,1,'A','A',1.0,'A',4,'D');
+insert into products_replica values (1350,1,'A','A',1.0,'A',5,'E');
+sqoop job --exec job1
+hadoop fs -cat /user/cloudera/problem5/products-incremental/part* |wc
+   1350    8648  187464
+11:52
+
+create table products_hive  (product_id int, product_category_id int, product_name string, product_description string, product_price float, product_imaage string,product_grade int,  product_sentiment string);
+sqoop job --create job2 -- import \
+--connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table products_replica --hive-import --hive-database problem5 --hive-table products_hive \
+--check-column product_id --incremental append --last-value 0
+sqoop job --exec job2
+select count(*) from products_hive;
+    1350
+insert into products_replica values (2001,1,'A','A',1.0,'A',1,'A');
+insert into products_replica values (2002,1,'A','A',1.0,'A',2,'B');
+insert into products_replica values (2003,1,'A','A',1.0,'A',3,'C');
+sqoop job --exec job2
+select count(*) from products_hive;
+    1353
+insert into products_replica values (2005,1,'A','A',1.0,'A',1,'A');
+insert into products_replica values (2006,1,'A','A',1.0,'A',2,'B');
+sqoop job --exec job2
+select count(*) from products_hive;
+    1355
+12:14
+
+describe products_hive;
+describe products_external;
+create table products_external  (product_id int(11) primary Key, product_grade int(11), product_category_id int(11), product_name varchar(100), product_description varchar(100), product_price float, product_impage varchar(500), product_sentiment varchar(100));
+sqoop export --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table products_external \
+--export-dir /user/hive/warehouse/problem5.db/products_hive/ \
+--input-fields-terminated-by '\001' --input-null-string 'null' --input-null-non-string 'null' \
+--update-key product_id --update-mode allowinsert \
+--columns product_id,product_category_id,product_name,product_description,product_price,product_impage,product_grade,product_sentiment
+select count(*) from products_external;
+    1355
+insert into products_hive values (3001,1,'A','A',1.0,'A',1,'A');
+insert into products_hive values (3002,1,'A','A',1.0,'A',2,'B');
+sqoop export --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table products_external \
+--export-dir /user/hive/warehouse/problem5.db/products_hive/ \
+--input-fields-terminated-by '\001' --input-null-string 'null' --input-null-non-string 'null' \
+--update-key product_id --update-mode allowinsert \
+--columns product_id,product_category_id,product_name,product_description,product_price,product_impage,product_grade,product_sentiment
+select count(*) from products_external;
+    1357
+12:43
+
+
+
+
+
