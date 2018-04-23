@@ -1,0 +1,70 @@
+http://arun-teaches-u-tech.blogspot.sg/p/problem-7.html
+5:07
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table orders --target-dir /user/cloudera/problem7/prework --as-avrodatafile -m 1
+
+hadoop fs -get /user/cloudera/problem7/prework
+5:10
+
+cp /etc/flume-ng/conf/flume-conf.properties.template problem7.conf
+agent.sources = seqGenSrc
+agent.channels = memoryChannel
+agent.sinks = loggerSink
+
+# For each one of the sources, the type is defined
+agent.sources.seqGenSrc.type = avro
+agent.sources.seqGenSrc.bind = localhost
+agent.sources.seqGenSrc.port = 11112
+# The channel can be defined as follows.
+agent.sources.seqGenSrc.channels = memoryChannel
+
+# Each sink's type must be defined
+agent.sinks.loggerSink.type = hdfs
+agent.sinks.loggerSink.hdfs.path = /user/cloudera/problem7/sink
+
+#Specify the channel the sink should use
+agent.sinks.loggerSink.channel = memoryChannel
+
+# Each channel's type is defined.
+agent.channels.memoryChannel.type = jdbc
+
+# Other config values specific to each type of channel(sink or source)
+# can be defined as well
+# In this case, it specifies the capacity of the memory channel
+agent.channels.memoryChannel.capacity = 100
+
+flume-ng agent --name agent --conf-file problem7.conf
+flume-ng avro-client -H localhost -p 11112 -F /home/cloudera/prework/part-m-00000.avro
+
+waiting write call back stop wait status
+5:30
+
+start_logs
+tail -F /opt/gen_logs/logs/access.log
+cp -f /etc/flume-ng/conf/flume-conf.properties.template problem7b.conf
+agent.sources = seqGenSrc
+agent.channels = memoryChannel
+agent.sinks = loggerSink
+
+# For each one of the sources, the type is defined
+agent.sources.seqGenSrc.type = exec
+agent.sources.seqGenSrc.command = tail -F /opt/gen_logs/logs/access.log
+
+# The channel can be defined as follows.
+agent.sources.seqGenSrc.channels = memoryChannel
+
+# Each sink's type must be defined
+agent.sinks.loggerSink.type = hdfs
+agent.sinks.loggerSink.hdfs.path = /user/cloudera/problem7/step2
+
+#Specify the channel the sink should use
+agent.sinks.loggerSink.channel = memoryChannel
+
+# Each channel's type is defined.
+agent.channels.memoryChannel.type = memory
+agent.channels.memoryChannel.capacity = 1000
+agent.channels.memoryChannel.transactionCapacity = 200
+flume-ng agent --name agent --conf-file problem7b.conf
+hadoop fs -ls /user/cloudera/problem7/step2
+5:42
