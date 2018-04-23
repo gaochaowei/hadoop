@@ -10,11 +10,17 @@ import org.apache.spark.sql.functions._
 ///////////WRITE CODE BELOW /////////////////////////
 
 import org.apache.spark.streaming._
+import org.apache.spark.streaming.dstream._
 
 val ssc = new StreamingContext(sc, Seconds(1))
 
-ssc.textFileStream("/user/cloudera/*log")
-ssc.socketTextStream("localhost", 9999)
+val s1: DStream[String] = ssc.textFileStream("/user/cloudera")
+val s3: InputDStream[(String,String)] = ssc.fileStream("/user/cloudera/")
 
-ssc.start()
-ssc.awaitTermination()
+val s2: ReceiverInputDStream[String] = ssc.socketTextStream("localhost", 9999)
+val words = s2.flatMap(_.split(" "))
+val wordCounts = words.map(x => (x, 1)).reduceByKey(_ + _)
+wordCounts.print
+
+ssc.start
+ssc.awaitTermination
