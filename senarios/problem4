@@ -1,0 +1,60 @@
+http://arun-teaches-u-tech.blogspot.sg/p/cca-175-hadoop-and-spark-developer-exam_5.html
+4:53
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table orders --target-dir /user/cloudera/problem5/text --fields-terminated-by '\t' -m 1
+4:55
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table orders --target-dir /user/cloudera/problem5/avro --as-avrodatafile -m 1
+4:57
+
+sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
+--table orders --target-dir /user/cloudera/problem5/parquet --as-parquetfile -m 1
+4:57
+
+import com.databricks.spark.avro._
+val df = sqlContext.read.avro("/user/cloudera/problem5/avro")
+sqlContext.setConf("spark.sql.parquet.compression.codec","snappy")
+df.write.parquet("/user/cloudera/problem5/parquet-snappy-compress")
+hadoop fs -ls /user/cloudera/problem5/parquet-snappy-compress
+5:02
+
+BREAK
+8:21
+
+df.rdd.saveAsTextFile("/user/cloudera/problem5/text-gzip-compress",classOf[org.apache.hadoop.io.compress.GzipCodec])
+hadoop fs -ls /user/cloudera/problem5/text-gzip-compress
+8:24
+
+7:45
+df.write.sequenceFile("/user/cloudera/problem5/sequence")
+7:47
+
+df.rdd.saveAsTextFile("/user/cloudera/problem5/text-snappy-compress",classOf[org.apache.hadoop.io.compress.SnappyCodec])
+7:49
+
+val df2 = sqlContext.read.parquet("/user/cloudera/problem5/parquet-snappy-compress")
+sqlContext.setConf("spark.sql.parquet.compression.codec","uncompressed")
+df2.write.parquet("/user/cloudera/problem5/parquet-no-compress")
+
+sqlContext.setConf("spark.sql.avro.compression.codec","snappy")
+df2.write.avro("/user/cloudera/problem5/avro-snappy")
+7:54
+
+val df3 = sqlContext.read.avro("/user/cloudera/problem5/avro-snappy")
+df3.toJSON.saveAsTextFile("/user/cloudera/problem5/json-no-compress")
+df3.toJSON.saveAsTextFile("/user/cloudera/problem5/json-gzip",classOf[org.apache.hadoop.io.compress.GzipCodec])
+hadoop fs -cat /user/cloudera/problem5/json-no-compress/part*
+7:59
+
+val df4 = sqlContext.read.json("/user/cloudera/problem5/json-gzip")
+df4.map(_.mkString(",")).saveAsTextFile("/user/cloudera/problem5/csv-gzip",classOf[org.apache.hadoop.io.compress.GzipCodec])
+hadoop fs -ls /user/cloudera/problem5/csv-gzip
+hadoop fs -text /user/cloudera/problem5/csv-gzip/part*
+8:04
+
+df.write.format("sequence").save("/user/cloudera/problem5/sequence")
+
+
+
