@@ -1,38 +1,27 @@
 http://arun-teaches-u-tech.blogspot.sg/p/cca-175-hadoop-and-spark-developer-exam_5.html
-4:53
 
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
 --table orders --target-dir /user/cloudera/problem5/text --fields-terminated-by '\t' -m 1
-4:55
 
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
 --table orders --target-dir /user/cloudera/problem5/avro --as-avrodatafile -m 1
-4:57
 
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
 --table orders --target-dir /user/cloudera/problem5/parquet --as-parquetfile -m 1
-4:57
 
 import com.databricks.spark.avro._
 val df = sqlContext.read.avro("/user/cloudera/problem5/avro")
 sqlContext.setConf("spark.sql.parquet.compression.codec","snappy")
 df.write.parquet("/user/cloudera/problem5/parquet-snappy-compress")
 hadoop fs -ls /user/cloudera/problem5/parquet-snappy-compress
-5:02
-
-BREAK
-8:21
 
 df.rdd.saveAsTextFile("/user/cloudera/problem5/text-gzip-compress",classOf[org.apache.hadoop.io.compress.GzipCodec])
 hadoop fs -ls /user/cloudera/problem5/text-gzip-compress
-8:24
 
-7:45
-df.write.sequenceFile("/user/cloudera/problem5/sequence")
-7:47
+df.map(x=> (x(0).toString,x.mkString(","))).saveAsSequenceFile("/user/cloudera/problem5/sequence");
+hadoop fs -text /user/cloudera/problem5/sequence/part*
 
 df.rdd.saveAsTextFile("/user/cloudera/problem5/text-snappy-compress",classOf[org.apache.hadoop.io.compress.SnappyCodec])
-7:49
 
 val df2 = sqlContext.read.parquet("/user/cloudera/problem5/parquet-snappy-compress")
 sqlContext.setConf("spark.sql.parquet.compression.codec","uncompressed")
@@ -40,21 +29,22 @@ df2.write.parquet("/user/cloudera/problem5/parquet-no-compress")
 
 sqlContext.setConf("spark.sql.avro.compression.codec","snappy")
 df2.write.avro("/user/cloudera/problem5/avro-snappy")
-7:54
+hadoop fs -cat /user/cloudera/problem5/avro-snappy/part-* | head
 
 val df3 = sqlContext.read.avro("/user/cloudera/problem5/avro-snappy")
 df3.toJSON.saveAsTextFile("/user/cloudera/problem5/json-no-compress")
 df3.toJSON.saveAsTextFile("/user/cloudera/problem5/json-gzip",classOf[org.apache.hadoop.io.compress.GzipCodec])
 hadoop fs -cat /user/cloudera/problem5/json-no-compress/part*
-7:59
 
 val df4 = sqlContext.read.json("/user/cloudera/problem5/json-gzip")
 df4.map(_.mkString(",")).saveAsTextFile("/user/cloudera/problem5/csv-gzip",classOf[org.apache.hadoop.io.compress.GzipCodec])
 hadoop fs -ls /user/cloudera/problem5/csv-gzip
 hadoop fs -text /user/cloudera/problem5/csv-gzip/part*
-8:04
 
-df.write.format("sequence").save("/user/cloudera/problem5/sequence")
+hadoop fs -get /user/cloudera/problem5/sequence/part-00000
+[cloudera@quickstart ~]$ cut -c-300 part-00000
+SEQorg.apache.hadoop.io.Textorg.apache.hadoop.io.Text�	�\��8���Nq���11,1374681600000,11599,CLOSED&2#2,1374681600000,256,PENDING_PAYMENT!33,1374681600000,12111,COMPLETE44,1374681600000,8827,CLOSED!55,1374681600000,11318,COMPLETE 66,1374
 
-
-
+val ordersSeq = sc.sequenceFile("/user/cloudera/problem5/sequence",classOf[org.apache.hadoop.io.Text],classOf[org.apache.hadoop.io.Text])
+ordersSeq.map(x=>{var d = x._2.toString.split(','); (d(0).toInt,d(1).toLong,d(2).toInt,d(3))}).
+    toDF("order_id","order_date","order_customer_id","order_status").write.orc("/user/cloudera/problem5/orc");
