@@ -1,73 +1,44 @@
 http://arun-teaches-u-tech.blogspot.sg/p/problem-6.html
-1:07
 
 create database problem6;
 use problem6;
 sqoop import-all-tables --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
 --hive-import --hive-database problem6
-1:10
 
 val a3 = sql("""
-    select p.product_id,
-           c.category_department_id,
-           rank() over(partition by c.category_department_id order by p.product_price) price_rank
-    from problem6.products p, problem6.categories c
-    where p.product_category_id = c.category_id
-    order by c.category_department_id, price_rank desc
+    select c.category_department_id department_id, p.product_id, p.product_name, p.product_price,
+           rank() over(partition by c.category_department_id order by p.product_price) product_price_rank,
+           dense_rank() over(partition by c.category_department_id order by p.product_price) product_price_dence_rank
+    from problem6.products p join problem6.categories c on p.product_category_id = c.category_id
+    order by c.category_department_id, product_price_rank desc
     """)
 a3.show
-1:29
 
 val a4 = sql("""
-    select x.order_customer_id as customer_id from (
-    select o.order_customer_id,
-           count(distinct(oi.order_item_product_id)) num_products
-    from problem6.order_items oi, problem6.orders o
-    where oi.order_item_order_id = o.order_id
-    group by o.order_customer_id
-    order by num_products desc
-    limit 10 ) x
+    select c.customer_id, c.customer_fname,
+           count(distinct(oi.order_item_product_id)) unique_products
+    from problem6.orders o
+     join problem6.order_items oi on oi.order_item_order_id = o.order_id
+     join problem6.customers c on o.order_customer_id = c.customer_id
+    group by c.customer_id, c.customer_fname
+    order by unique_products desc
+    limit 10
     """)
 a4.show
-1:35
 
-val a5 = sql("""
-    select * from
-    (select p.product_id,
-           c.category_department_id,
-           rank() over(partition by c.category_department_id order by p.product_price) price_rank
-    from problem6.products p, problem6.categories c
-    where p.product_category_id = c.category_id
-    order by c.category_department_id, price_rank desc) x
-    where price_rank<100
-    """)
+a3.registerTempTable("a3")
+val a5 = sql("select * from a3 where product_price_rank < 100")
 
 a4.registerTempTable("a4")
 
 val a6 = sql("""
-    select p3.* from problem6.products p3 where p3.product_price<100 and p3.product_id in (
-        select distinct oi2.order_item_product_id
-        from problem6.order_items oi2, problem6.orders o2
-        where oi2.order_item_order_id = o2.order_id and o2.order_customer_id in (
-            select  a.customer_id from a4
-        )
-        )
+    select distinct p.* from problem6.orders o
+    join problem6.order_items oi on oi.order_item_order_id = o.order_id
+    join problem6.products p on oi.order_item_product_id = p.product_id
+    join a4 c on o.order_customer_id = c.customer_id
+    where p.product_price < 100
     """)
-val a6 = sql("""
-    select * from problem6.products where product_price<100 and product_id in (
-        select distinct oi2.order_item_product_id
-        from problem6.order_items oi2, problem6.orders o2
-        where oi2.order_item_order_id = o2.order_id and o2.order_customer_id in (
-        select x.order_customer_id as customer_id from (
-            select o.order_customer_id,
-                   count(distinct(oi.order_item_product_id)) num_products
-            from problem6.order_items oi, problem6.orders o
-            where oi.order_item_order_id = o.order_id
-            group by o.order_customer_id
-            order by num_products desc
-            limit 10 ) x)
-            )
-    """)
-2:02
-a5.saveAsTable("problem6.a5")
-2:03
+
+a5.coalesce(1).saveAsTable("problem6.a5")
+a6.coalesce(1).saveAsTable("problem6.a6")
+//sql("create table problem6.product_rank_result as select * from a3 where product_price_rank < 100");

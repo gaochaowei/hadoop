@@ -8,26 +8,22 @@ alter table products_replica add primary key (product_id);
 alter table products_replica add column (product_grade int, product_sentiment varchar(100));
 update products_replica set product_grade = 1  where product_price > 500;
 update products_replica set product_sentiment  = 'WEAK'  where product_price between 300 and  500;
-11:07
 //
 
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
 --table products_replica --target-dir /user/cloudera/problem5/products-text \
 --where "product_id>1 and product_id<=1000" -m 3 --null-string 'NOT-AVAILABLE' --null-non-string -1 \
 --fields-terminated-by '|'
-11:14
 
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
 --table products_replica --target-dir /user/cloudera/problem5/products-text-part1 \
 --where "product_id<=1111" -m 2 --null-string 'NA' --null-non-string -1000 \
 --fields-terminated-by '*'
-11:17
 
 sqoop import --connect jdbc:mysql://quickstart:3306/retail_db --username retail_dba --password cloudera \
 --table products_replica --target-dir /user/cloudera/problem5/products-text-part2 \
 --where "product_id>1111" -m 5 --null-string 'NA' --null-non-string -1000 \
 --fields-terminated-by '*'
-11:18
 
 sqoop merge --new-data /user/cloudera/problem5/products-text-part2 --onto /user/cloudera/problem5/products-text-part1 \
 --target-dir /user/cloudera/problem5/products-text-both-parts --merge-key product_id \
@@ -62,7 +58,6 @@ insert into products_replica values (1350,1,'A','A',1.0,'A',5,'E');
 sqoop job --exec job1
 hadoop fs -cat /user/cloudera/problem5/products-incremental/part* |wc
    1350    8648  187464
-11:52
 
 create table products_hive  (product_id int, product_category_id int, product_name string, product_description string, product_price float, product_imaage string,product_grade int,  product_sentiment string);
 sqoop job --create job2 -- import \
@@ -83,7 +78,6 @@ insert into products_replica values (2006,1,'A','A',1.0,'A',2,'B');
 sqoop job --exec job2
 select count(*) from products_hive;
     1355
-12:14
 
 describe products_hive;
 describe products_external;
@@ -106,7 +100,6 @@ sqoop export --connect jdbc:mysql://quickstart:3306/retail_db --username retail_
 --columns product_id,product_category_id,product_name,product_description,product_price,product_impage,product_grade,product_sentiment
 select count(*) from products_external;
     1357
-12:43
 
 
 
