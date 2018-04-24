@@ -63,3 +63,5 @@ hive> select unix_timestamp(current_timestamp);
 1524013586
 hive> select unix_timestamp('2018/04/18','yyyy/MM/dd');
 1523980800
+
+select from_unixtime(cast(order_date/1000 as bigint),'DD/MM/YYYY') from orders_parquet

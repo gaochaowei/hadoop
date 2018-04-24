@@ -80,13 +80,13 @@ hive> set hive.exec.dynamic.partition=true;
 hive> set hive.exec.dynamic.partition.mode=nonstrict;
 
 hive> create table order_nonstrict (order_id int, order_date string, order_customer_id int, order_status string)
-      partition by (order_year string, order_month string)
+      partitioned by (order_year string, order_month string)
 hive> insert into order_nonstrict partition(order_year, order_month) select order_year, order_month, ...
 
 hive> set hive.exec.dynamic.partition=true;
 hive> set hive.exec.dynamic.partition.mode=strict;
 hive> create table order_strict (order_id int, order_date string, order_customer_id int, order_status string)
-      partition by (order_year string, order_month string)
+      partitioned by (order_year string, order_month string)
 hive> insert into order_strict partition(order_year='2013', order_month) select order_month, ...
 
 CREATE TABLE apachelog (

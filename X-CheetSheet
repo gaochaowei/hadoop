@@ -1,0 +1,79 @@
+Sqoop
+================================
+--query 'WHERE $CONDITIONS' / "WHERE \$CONDITIONS"
+--split-by
+-m 1
+
+--check-column
+--incremental append | lastmodified
+--last-value
+
+--update-key  unique, PK default, insert duplicate if not unique
+--update-mode updateonly|allowinsert
+
+Hive
+===============================
+$ hive -e "set;" | grep "compress"
+show create table orders;
+show functions like '*date*|*time*';
+describe function extended from_unixtime;
+rank() over (partition by abc order by abc desc)
+cast(obj as decimal(10,2))
+from_unixtime(cast(order_date/1000 as bigint),'DD/MM/YYYY')
+TBLPROPERTIES ('avro.schema.url'='/user/hive/schemas/order/orders.avsc')
+ROW FORMAT SERDE 'xxx'
+STORED AS INPUTFORMAT 'yyy' OUTPUTFORMAT 'zzz'
+
+Spark
+==============================
+sqlContext.table("orders")
+
+row(3), row.getInt(0), row.isNullAt(3), row.getAs[Int]("order_id")
+
+$"order_date".cast("date")
+expr("avg(price)")
+selectExpr("avg(price)")
+$"order_date".isNull
+orders.select(from_unixtime($"order_date"/1000,"yyyy-MM-dd"))
+
+orders.printSchema
+orders.withColumnRenamed("order_id","id")
+
+countDistinct("order_date","order_status")
+val w = org.apache.spark.sql.expressions.Window.orderBy($"order_date".desc)
+rank.over(w)
+
+groupedOrderItems.avg("order_item_subtotal", "order_item_quantity")
+groupedOrderItems.agg("order_item_subtotal" -> "sum", "order_item_quantity" -> "max")
+groupedOrderItems.agg(avg("order_item_subtotal"), count(lit(1)))
+rdd.sortBy(_.getDouble(2),false)
+
+$ spark-submit --help
+$ spark-shell --help
+scala> :help, :history, :imports, :implicits, sc.getClass, :quit
+
+>>> help("modules accu")
+>>> dir(sc)[36:]
+
+import com.databricks.spark.avro._
+
+Compression
+===============================
+set hive.exec.dynamic.partition=true;
+set hive.exec.dynamic.partition.mode=nonstrict;
+set hive.exec.compress.output=true;
+set mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec;
+set parquet.compression=uncompressed;
+set avro.output.codec=snappy;
+set orc.compress=SNAPPY|SNAPPY|ZLIB;
+tblproperties("orc.compress"="ZLIB");
+
+rdd.saveAsTextFile("/user/cloudera/orders_snappy", classOf[org.apache.hadoop.io.compress.SnappyCodec])
+sqlContext.setConf("spark.hadoop.mapred.output.compress", "true")
+sqlContext.setConf("spark.hadoop.mapred.output.compression.codec", "org.apache.hadoop.io.compress.GzipCodec")
+sqlContext.setConf("spark.sql.parquet.compression.codec", "uncompressed")
+sqlContext.setConf("spark.sql.avro.compression.codec", "uncompressed")
+
+hadoop fs -cat /user/cloudera/problem5/avro-snappy/part-* | head -n 2
+Objavro.codec
+                snappyavro.schema�{"type":"record",
